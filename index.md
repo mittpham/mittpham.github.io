@@ -4,5 +4,4 @@
 - [Moving Square](01-first-day)
 
 ## Assignments
-- Add assignments here
-[Interactive Scene](interactive-scene)
+- [Interactive Scene](interactive-scene)
