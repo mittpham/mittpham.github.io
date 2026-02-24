@@ -1,9 +1,9 @@
-// Project Title
-// Your Name
-// Date
+// Interactive Scene
+// Mitt Pham
+// Feb 24
 //
 // Extra for Experts:
-// - describe what you did to take this project "above and beyond"
+// - use of the mouse scroll wheel
 
 // Character variables
 let x;
@@ -36,7 +36,8 @@ function draw() {
 
   if (starting) {
     startScreen();
-  } else if (playing) {
+  } 
+  else if (playing) {
     moveCharacter();
     addGravity();
     checkJump();
@@ -85,7 +86,8 @@ function addGravity() {
 function checkJump() {
   if (y >= height - d / 2) {
     canJump = true;
-  } else {
+  } 
+  else {
     canJump = false;
   }
 }
@@ -105,7 +107,7 @@ function displayCharacter() {
 
 // add falling blocks
 function dropBlocks() {
-  for(var i=0;i<500;i=i+1) {
+  for(let i=0; i<500; i=i+1) {
     blocks.push(new Block());
     blocks[i].display();
     blocks[i].gravity();
