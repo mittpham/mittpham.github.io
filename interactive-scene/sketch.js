@@ -28,6 +28,11 @@ function setup() {
   noStroke();
   x = width / 2;
   y = height / 2;
+
+  // Creating falling blocks
+  for (let i = 0; i < 500; i++) {
+    blocks.push(new Block(random(width), random(-5000, 0), random(20, 40), 20));
+  }
 }
 
 // Start game and add in gravity, movement, and jump
@@ -108,7 +113,6 @@ function displayCharacter() {
 // add falling blocks
 function dropBlocks() {
   for(let i=0; i<500; i=i+1) {
-    blocks.push(new Block(random(1, width), 1, random(1, width), 10));
     blocks[i].display();
     blocks[i].gravity();
   }
@@ -151,6 +155,6 @@ class Block {
 
   // Add gravity
   gravity() {
-    this.y += 2;
+    this.y += 4;
   }
 }
