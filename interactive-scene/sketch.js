@@ -19,9 +19,6 @@ let canJump = false;
 let starting = true;
 let playing = false;
 
-// Blocks
-let blocks = [];
-
 // Setting up screen
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -29,10 +26,6 @@ function setup() {
   x = width / 2;
   y = height / 2;
 
-  // Creating falling blocks
-  for (let i = 0; i < 500; i++) {
-    blocks.push(new Block(random(width), random(-5000, 0), random(20, 40), 20));
-  }
 }
 
 // Start game and add in gravity, movement, and jump
@@ -48,7 +41,6 @@ function draw() {
     checkJump();
     jump();
     displayCharacter();
-    dropBlocks();
   }
 }
 
@@ -110,14 +102,6 @@ function displayCharacter() {
   circle(x, y, d);
 }
 
-// add falling blocks
-function dropBlocks() {
-  for(let i=0; i<500; i=i+1) {
-    blocks[i].display();
-    blocks[i].gravity();
-  }
-}
-
 // Change size of character with mouse scroll
 function mouseWheel(event) {
   // Decrease size
@@ -135,26 +119,5 @@ function mouseClicked() {
   if (mouseButton === LEFT) {
     starting = false;
     playing = true;
-  }
-}
-
-// Create blocks and add gravity
-class Block {
-  constructor(x, y, w, h) {
-    this.x = x;
-    this.y = y;
-    this.w = w;
-    this.h = h;
-  }
-
-  // Display blocks
-  display() {
-    fill(170);
-    rect(this.x, this.y, this.w, this.h);
-  }
-
-  // Add gravity
-  gravity() {
-    this.y += 4;
   }
 }
