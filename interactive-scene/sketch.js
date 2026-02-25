@@ -151,6 +151,6 @@ class Block {
 
   // Add gravity
   gravity() {
-    this.y += 1;
+    this.y += 2;
   }
 }
