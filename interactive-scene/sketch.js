@@ -108,7 +108,7 @@ function displayCharacter() {
 // add falling blocks
 function dropBlocks() {
   for(let i=0; i<500; i=i+1) {
-    blocks.push(new Block());
+    blocks.push(new Block(random(1, width), 1, random(1, width), 10));
     blocks[i].display();
     blocks[i].gravity();
   }
@@ -139,8 +139,8 @@ class Block {
   constructor(x, y, w, h) {
     this.x = x;
     this.y = y;
-    this.w = random(1, width);
-    this.h = 10;
+    this.w = w;
+    this.h = h;
   }
 
   // Display blocks
