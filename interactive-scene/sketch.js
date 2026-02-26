@@ -47,6 +47,8 @@ function draw() {
 // Create start screen
 function startScreen() {
   fill("white");
+  rect(width / 2 - 150, height / 2 - 100, 300, 200);
+  fill("black");
   textSize(32);
   textAlign(CENTER, CENTER);
   text("Left click to start", width / 2, height / 2);
@@ -115,8 +117,8 @@ function mouseWheel(event) {
 }
 
 // Change state from starting to playing
-function mouseClicked() {
-  if (mouseButton === LEFT) {
+function mousePressed() {
+  if (mouseButton === LEFT && mouseX > width / 2 - 150 && mouseX < width / 2 + 150 && mouseY > ) {
     starting = false;
     playing = true;
   }
