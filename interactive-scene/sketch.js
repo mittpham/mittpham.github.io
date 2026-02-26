@@ -118,7 +118,7 @@ function mouseWheel(event) {
 
 // Change state from starting to playing
 function mousePressed() {
-  if (mouseButton === LEFT && mouseX > width / 2 - 150 && mouseX < width / 2 + 150 && mouseY > ) {
+  if (mouseButton === LEFT && mouseX > width / 2 - 150 && mouseX < width / 2 + 150 && mouseY > height / 2 - 100 && mouseY < height / 2 + 100) {
     starting = false;
     playing = true;
   }
