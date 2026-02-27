@@ -14,6 +14,13 @@ let dx = 5;
 let gravity = 0.75;
 let jumpStrength = -10;
 
+// Ball variables
+let ballX;
+let ballY;
+let radius = 20;
+let ballDx;
+let ballDy;
+
 // State variables
 let canJump = false;
 let starting = true;
@@ -23,9 +30,16 @@ let playing = false;
 function setup() {
   createCanvas(windowWidth, windowHeight);
   noStroke();
+
+  // Initialize character position
   x = width / 2;
   y = height / 2;
 
+  // Initialize ball position and direction
+  ballX = width / 2;
+  ballY = 10;
+  ballDx = random(-10, 10);
+  ballDy = random(-10, 10);
 }
 
 // Start game and add in gravity, movement, and jump
@@ -41,6 +55,8 @@ function draw() {
     checkJump();
     jump();
     displayCharacter();
+    moveBall();
+    displayBall();
   }
 }
 
@@ -102,6 +118,27 @@ function jump() {
 function displayCharacter() {
   fill("white");
   circle(x, y, d);
+}
+
+// Move ball
+function moveBall() {
+  ballX += ballDx;
+  ballY += ballDy;
+  
+  if (ballX > width - radius / 2 || ballX < radius / 2 ) {
+    ballDx *= -1;
+    ballDx *= 0.1;
+  } 
+  else if (ballY > height - radius / 2 || ballY < radius / 2) {
+    ballDy *= -1;
+    ballDy *= 0.1;
+  }
+}
+
+// Display ball on screen
+function displayBall() {
+  fill(255, 0, 0);
+  circle(ballX, ballY, radius);
 }
 
 // Change size of character with mouse scroll
