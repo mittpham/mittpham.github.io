@@ -157,11 +157,13 @@ function checkCollision() {
     starting = true;
     playing = false;
     
-    // Reset position
+    // Reset positions and speed
     x = width / 2;
     y = height / 2;
     ballX = width / 2;
     ballY = 60;
+    ballDx = random(-10, 10);
+    ballDy = random(-10, 10);
   }
 }
 
