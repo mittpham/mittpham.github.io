@@ -20,6 +20,8 @@ let ballY;
 let radius = 20;
 let ballDx;
 let ballDy;
+let speedIncrease = 1.2;
+let maxSpeed = 30;
 
 // State variables
 let canJump = false;
@@ -37,7 +39,7 @@ function setup() {
 
   // Initialize ball position and direction
   ballX = width / 2;
-  ballY = height / 2;
+  ballY = 30;
   ballDx = random(-10, 10);
   ballDy = random(-10, 10);
 }
@@ -127,9 +129,15 @@ function moveBall() {
   
   if (ballX > width - radius / 2 || ballX < radius / 2 ) {
     ballDx *= -1;
+    if (abs(ballDx) < maxSpeed) {
+      ballDx *= speedIncrease;
+    }
   } 
   else if (ballY > height - radius / 2 || ballY < radius / 2) {
     ballDy *= -1;
+    if (abs(ballDy) < maxSpeed) {
+      ballDy *= speedIncrease;
+    }
   }
 }
 
