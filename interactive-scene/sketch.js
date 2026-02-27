@@ -37,7 +37,7 @@ function setup() {
 
   // Initialize ball position and direction
   ballX = width / 2;
-  ballY = 10;
+  ballY = height / 2;
   ballDx = random(-10, 10);
   ballDy = random(-10, 10);
 }
@@ -127,11 +127,9 @@ function moveBall() {
   
   if (ballX > width - radius / 2 || ballX < radius / 2 ) {
     ballDx *= -1;
-    ballDx *= 0.1;
   } 
   else if (ballY > height - radius / 2 || ballY < radius / 2) {
     ballDy *= -1;
-    ballDy *= 0.1;
   }
 }
 
