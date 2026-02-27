@@ -17,7 +17,7 @@ let jumpStrength = -10;
 // Ball variables
 let ballX;
 let ballY;
-let radius = 20;
+let radius = 100;
 let ballDx;
 let ballDy;
 let speedIncrease = 1.2;
@@ -39,7 +39,7 @@ function setup() {
 
   // Initialize ball position and direction
   ballX = width / 2;
-  ballY = 30;
+  ballY = 60;
   ballDx = random(-10, 10);
   ballDy = random(-10, 10);
 }
@@ -59,6 +59,7 @@ function draw() {
     displayCharacter();
     moveBall();
     displayBall();
+    checkCollision();
   }
 }
 
@@ -147,6 +148,23 @@ function displayBall() {
   circle(ballX, ballY, radius);
 }
 
+// Check if the red ball and character are touching
+function checkCollision() {
+  let distance = dist(x, y, ballX, ballY);
+
+  // Reset game
+  if (distance < d/2 + radius/2) {
+    starting = true;
+    playing = false;
+    
+    // Reset position
+    x = width / 2;
+    y = height / 2;
+    ballX = width / 2;
+    ballY = 60;
+  }
+}
+
 // Change size of character with mouse scroll
 function mouseWheel(event) {
   // Decrease size
@@ -159,7 +177,7 @@ function mouseWheel(event) {
   }
 }
 
-// Change state from starting to playing
+// Start playing when button pressed
 function mousePressed() {
   if (mouseButton === LEFT && mouseX > width / 2 - 150 && mouseX < width / 2 + 150 && mouseY > height / 2 - 100 && mouseY < height / 2 + 100) {
     starting = false;
