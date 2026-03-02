@@ -6,18 +6,18 @@
 // - use of the mouse scroll wheel
 
 // Character variables
-let x;
-let y;
-let d = 25;
-let dy = 0;
-let dx = 5;
+let characterX;
+let characterY;
+let characterD = 25;
+let characterDy = 0;
+let characterDx = 5;
 let gravity = 0.75;
 let jumpStrength = -10;
 
 // Ball variables
 let ballX;
 let ballY;
-let radius = 100;
+let ballD = 100;
 let ballDx;
 let ballDy;
 let speedIncrease = 1.2;
@@ -34,8 +34,8 @@ function setup() {
   noStroke();
 
   // Initialize character position
-  x = width / 2;
-  y = height / 2;
+  characterX = width / 2;
+  characterY = height / 2;
 
   // Initialize ball position and direction
   ballX = width / 2;
@@ -77,32 +77,32 @@ function startScreen() {
 function moveCharacter() {
   // Move left
   if (keyIsDown(65)) {
-    x -= dx;
-    if (x < 0 + d / 2) {
-      x = 0 + d / 2;
+    characterX -= characterDx;
+    if (characterX < 0 + characterD / 2) {
+      characterX = 0 + characterD / 2;
     }
   }
   // Move right
   if (keyIsDown(68)) {
-    x += dx;
-    if (x > width - d / 2) {
-      x = width - d / 2;
+    characterX += characterDx;
+    if (characterX > width - characterD / 2) {
+      characterX = width - characterD / 2;
     }
   }
 }
 
 // Add gravity to push player to the floor
 function addGravity() {
-  dy += gravity;
-  y += dy;
-  if (y >= height - d / 2) {
-    y = height - d / 2;
+  characterDy += gravity;
+  characterY += characterDy;
+  if (characterY >= height - characterD / 2) {
+    characterY = height - characterD / 2;
   }
 }
 
 // Check if player is touching the floor to approve jump
 function checkJump() {
-  if (y >= height - d / 2) {
+  if (characterY >= height - characterD / 2) {
     canJump = true;
   } 
   else {
@@ -113,14 +113,14 @@ function checkJump() {
 // Make character jump with space or W
 function jump() {
   if ((keyIsDown(32) || keyIsDown(87)) && canJump) {
-    dy = jumpStrength;
+    characterDy = jumpStrength;
   }
 }
 
 // Show character on screen
 function displayCharacter() {
   fill("white");
-  circle(x, y, d);
+  circle(characterX, characterY, characterD);
 }
 
 // Add movement to the ball
@@ -131,13 +131,13 @@ function moveBall() {
   ballY += ballDy;
   
   // bounce the ball off of the walls
-  if (ballX > width - radius / 2 || ballX < radius / 2 ) {
+  if (ballX > width - ballD / 2 || ballX < ballD / 2 ) {
     ballDx *= -1;
     if (abs(ballDx) < maxSpeed) {
       ballDx *= speedIncrease;
     }
   } 
-  else if (ballY > height - radius / 2 || ballY < radius / 2) {
+  else if (ballY > height - ballD / 2 || ballY < ballD / 2) {
     ballDy *= -1;
     if (abs(ballDy) < maxSpeed) {
       ballDy *= speedIncrease;
@@ -148,20 +148,20 @@ function moveBall() {
 // Display ball on screen
 function displayBall() {
   fill(255, 0, 0);
-  circle(ballX, ballY, radius);
+  circle(ballX, ballY, ballD);
 }
 
 // Check if the red ball and character are touching
 function checkCollision() {
 
   // Reset game if ball and character touch
-  if (dist(x, y, ballX, ballY) < d/2 + radius/2) {
+  if (dist(characterX, characterY, ballX, ballY) < characterD / 2 + ballD / 2) {
     starting = true;
     playing = false;
     
     // Reset positions and speed
-    x = width / 2;
-    y = height / 2;
+    characterX = width / 2;
+    characterY = height / 2;
     ballX = width / 2;
     ballY = 60;
     ballDx = random(-10, 10);
@@ -173,11 +173,11 @@ function checkCollision() {
 function mouseWheel(event) {
   // Decrease size
   if (event.delta > 0) {
-    d = 25;
+    characterD = 25;
   }
   // Increase size
   else if (event.delta < 0) {
-    d = 75;
+    characterD = 75;
   }
 }
 
