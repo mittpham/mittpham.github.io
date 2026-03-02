@@ -150,10 +150,9 @@ function displayBall() {
 
 // Check if the red ball and character are touching
 function checkCollision() {
-  let distance = dist(x, y, ballX, ballY);
 
-  // Reset game
-  if (distance < d/2 + radius/2) {
+  // Reset game if ball and character touch
+  if (dist(x, y, ballX, ballY) < d/2 + radius/2) {
     starting = true;
     playing = false;
     
