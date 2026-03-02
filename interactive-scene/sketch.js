@@ -21,7 +21,7 @@ let ballD = 100;
 let ballDx;
 let ballDy;
 let speedIncrease = 1.2;
-let maxSpeed = 30;
+let maxSpeed = 50;
 
 // State variables
 let canJump = false;
