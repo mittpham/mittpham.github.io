@@ -123,11 +123,14 @@ function displayCharacter() {
   circle(x, y, d);
 }
 
-// Move ball
+// Add movement to the ball
 function moveBall() {
+
+  // Add speed to the ball
   ballX += ballDx;
   ballY += ballDy;
   
+  // bounce the ball off of the walls
   if (ballX > width - radius / 2 || ballX < radius / 2 ) {
     ballDx *= -1;
     if (abs(ballDx) < maxSpeed) {
