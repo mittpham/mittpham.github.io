@@ -51,6 +51,7 @@ function draw() {
     jump();
     displayCharacter();
     dropBlocks();
+    checkCollision();
   }
 }
 
