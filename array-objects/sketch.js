@@ -14,14 +14,8 @@ let characterDx = 5;
 let gravity = 0.75;
 let jumpStrength = -10;
 
-// Ball variables
-let ballX;
-let ballY;
-let ballD = 100;
-let ballDx;
-let ballDy;
-let speedIncrease = 1.2;
-let maxSpeed = 50;
+// Blocks
+let blocks = [];
 
 // State variables
 let canJump = false;
@@ -37,11 +31,10 @@ function setup() {
   characterX = width / 2;
   characterY = height / 2;
 
-  // Initialize ball position and direction
-  ballX = width / 2;
-  ballY = 60;
-  ballDx = random(-10, 10);
-  ballDy = random(-10, 10);
+  // Creating falling blocks
+  for (let i = 0; i < 500; i++) {
+    blocks.push(new Block(random(width), random(-5000, 0), random(20, 40), 20));
+  }
 }
 
 // Start game and add in gravity, movement, and jump
@@ -57,9 +50,7 @@ function draw() {
     checkJump();
     jump();
     displayCharacter();
-    moveBall();
-    displayBall();
-    checkCollision();
+    dropBlocks();
   }
 }
 
@@ -123,49 +114,32 @@ function displayCharacter() {
   circle(characterX, characterY, characterD);
 }
 
-// Add movement to the ball
-function moveBall() {
-
-  // Add speed to the ball
-  ballX += ballDx;
-  ballY += ballDy;
-  
-  // bounce the ball off of the walls
-  if (ballX > width - ballD / 2 || ballX < ballD / 2 ) {
-    ballDx *= -1;
-    if (abs(ballDx) < maxSpeed) {
-      ballDx *= speedIncrease;
-    }
-  } 
-  else if (ballY > height - ballD / 2 || ballY < ballD / 2) {
-    ballDy *= -1;
-    if (abs(ballDy) < maxSpeed) {
-      ballDy *= speedIncrease;
-    }
+// add falling blocks
+function dropBlocks() {
+  for(let i=0; i<500; i=i+1) {
+    blocks[i].display();
+    blocks[i].gravity();
   }
 }
 
-// Display ball on screen
-function displayBall() {
-  fill(255, 0, 0);
-  circle(ballX, ballY, ballD);
-}
+// Create blocks and add gravity
+class Block {
+  constructor(x, y, w, h) {
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+  }
 
-// Check if the red ball and character are touching
-function checkCollision() {
+  // Display blocks
+  display() {
+    fill(170);
+    rect(this.x, this.y, this.w, this.h);
+  }
 
-  // Reset game if ball and character touch
-  if (dist(characterX, characterY, ballX, ballY) < characterD / 2 + ballD / 2) {
-    starting = true;
-    playing = false;
-    
-    // Reset positions and speed
-    characterX = width / 2;
-    characterY = height / 2;
-    ballX = width / 2;
-    ballY = 60;
-    ballDx = random(-10, 10);
-    ballDy = random(-10, 10);
+  // Add gravity
+  gravity() {
+    this.y += 4;
   }
 }
 
