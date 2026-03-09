@@ -30,11 +30,6 @@ function setup() {
   // Initialize character position
   characterX = width / 2;
   characterY = height / 2;
-
-  // Creating falling blocks
-  for (let i = 0; i < 500; i++) {
-    blocks.push(new Block(random(width), random(-5000, 0), random(20, 40), 20));
-  }
 }
 
 // Start game and add in gravity, movement, and jump
@@ -117,31 +112,26 @@ function displayCharacter() {
 
 // add falling blocks
 function dropBlocks() {
-  for (let i=0; i<500; i=i+1) {
-    blocks[i].display();
-    blocks[i].gravity();
-  }
-}
 
-// Create blocks and add gravity
-class Block {
-  constructor(x, y, w, h) {
-    this.x = x;
-    this.y = y;
-    this.w = w;
-    this.h = h;
+  // Generate block variables
+  let Block = {
+    x: random(width),
+    y: random(-5000, 0),
+    w: random(20, 40),
+    h: 20,
+  };
+
+  // Creating falling blocks
+  for (let i = 0; i < 500; i++) {
+    blocks.push(new Block(random(width), random(-5000, 0), random(20, 40), 20));
   }
 
   // Display blocks
-  display() {
-    fill(170);
-    rect(this.x, this.y, this.w, this.h);
-  }
+  fill(170);
+  rect(this.x, this.y, this.w, this.h);
 
   // Add gravity
-  gravity() {
-    this.y += 4;
-  }
+  this.y += 4;
 }
 
 function checkCollision() {
