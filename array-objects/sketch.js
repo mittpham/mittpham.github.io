@@ -1,9 +1,9 @@
-// Interactive Scene
+// Arrays and Objects
 // Mitt Pham
-// Feb 24
+// March 9
 //
 // Extra for Experts:
-// - use of the mouse scroll wheel
+// idk
 
 // Character variables
 let characterX;
@@ -30,6 +30,19 @@ function setup() {
   // Initialize character position
   characterX = width / 2;
   characterY = height / 2;
+
+  // Generate block variables
+  let block = {
+    x: random(width),
+    y: random(-5000, 0),
+    w: random(20, 40),
+    h: 20,
+  };
+
+  // Spawn blocks
+  for (let i = 0; i < 200; i++) {
+    blocks.push(block);
+  }
 }
 
 // Start game and add in gravity, movement, and jump
@@ -112,19 +125,6 @@ function displayCharacter() {
 
 // add falling blocks
 function dropBlocks() {
-
-  // Generate block variables
-  let block = {
-    x: random(width),
-    y: random(-5000, 0),
-    w: random(20, 40),
-    h: 20,
-  };
-
-  // Creating falling blocks
-  for (let i = 0; i < 500; i++) {
-    blocks.push(block);
-  }
 
   // Display blocks
   fill(170);
