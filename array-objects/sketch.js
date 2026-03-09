@@ -135,7 +135,6 @@ function dropBlocks() {
 }
 
 function checkCollision() {
-  
 }
 
 // Change size of character with mouse scroll
