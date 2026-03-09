@@ -131,7 +131,7 @@ function dropBlocks() {
   rect(block.x, block.y, bLocks.w, block.h);
 
   // Add gravity
-  this.y += 4;
+  block.y += 4;
 }
 
 function checkCollision() {
