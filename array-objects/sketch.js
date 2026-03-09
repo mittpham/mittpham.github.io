@@ -114,7 +114,7 @@ function displayCharacter() {
 function dropBlocks() {
 
   // Generate block variables
-  let Block = {
+  let block = {
     x: random(width),
     y: random(-5000, 0),
     w: random(20, 40),
@@ -123,12 +123,12 @@ function dropBlocks() {
 
   // Creating falling blocks
   for (let i = 0; i < 500; i++) {
-    blocks.push(new Block(random(width), random(-5000, 0), random(20, 40), 20));
+    blocks.push(block);
   }
 
   // Display blocks
   fill(170);
-  rect(this.x, this.y, this.w, this.h);
+  rect(block.x, block.y, bLocks.w, block.h);
 
   // Add gravity
   this.y += 4;
