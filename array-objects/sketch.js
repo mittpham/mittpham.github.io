@@ -34,7 +34,7 @@ function setup() {
   // Generate block variables
   let block = {
     x: random(width),
-    y: random(-5000, 0),
+    y: random(-height, 0),
     w: random(20, 40),
     h: 20,
   };
@@ -51,7 +51,7 @@ function draw() {
 
   if (starting) {
     startScreen();
-  } 
+  }
   else if (playing) {
     moveCharacter();
     addGravity();
@@ -104,7 +104,7 @@ function addGravity() {
 function checkJump() {
   if (characterY >= height - characterD / 2) {
     canJump = true;
-  } 
+  }
   else {
     canJump = false;
   }
@@ -126,12 +126,18 @@ function displayCharacter() {
 // add falling blocks
 function dropBlocks() {
 
+  // Add gravity
+  block.y += 4;
+
+  // Reset block to top of the screen
+  if (block.y > height) {
+    block.x = random(width);
+    block.y = random(-100,0);
+  }
+
   // Display blocks
   fill(170);
   rect(block.x, block.y, bLocks.w, block.h);
-
-  // Add gravity
-  block.y += 4;
 }
 
 function checkCollision() {
