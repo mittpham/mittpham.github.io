@@ -117,7 +117,7 @@ function displayCharacter() {
 
 // add falling blocks
 function dropBlocks() {
-  for(let i=0; i<500; i=i+1) {
+  for (let i=0; i<500; i=i+1) {
     blocks[i].display();
     blocks[i].gravity();
   }
@@ -142,6 +142,10 @@ class Block {
   gravity() {
     this.y += 4;
   }
+}
+
+function checkCollision() {
+  
 }
 
 // Change size of character with mouse scroll
