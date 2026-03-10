@@ -29,6 +29,16 @@ let starting = true;
 let playing = false;
 let pickingColor = false;
 
+// Sounds
+let breakBlockSound;
+let deathSound;
+
+// Set up sounds
+function preload() {
+  breakBlockSound = loadSound("pop.mp3");
+  deathSound = loadSound("vineboom.mp3");
+}
+
 // Setting up screen
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -187,6 +197,11 @@ function checkCollision() {
       if (currentBlock.color !== characterColor) {
         reset();
       }
+    }
+    // Play break sound and break block if matching colors
+    else {
+      breakBlockSound.play();
+      blocks.splice(i, 1);
     }
   }
 }
