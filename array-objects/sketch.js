@@ -20,7 +20,7 @@ let blockSpeed = 2;
 let speedIncrease = 0.0005;
 
 // Colors
-let colors = ["red", "blue", "white", "purple", "pink", "green", "yellow", "orange"];
+let colors = ["red", "blue", "white", "purple"];
 
 // State variables
 let canJump = false;
@@ -41,7 +41,7 @@ function setup() {
     let block = {
       x: random(width),
       y: random(-height, 0),
-      w: random(20, 40),
+      w: 40,
       h: 20,
       color: random(colors),
     };
