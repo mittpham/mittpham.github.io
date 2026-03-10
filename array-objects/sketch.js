@@ -105,6 +105,7 @@ function addGravity() {
   characterY += characterDy;
   if (characterY >= height - characterD / 2) {
     characterY = height - characterD / 2;
+    characterDy = 0;
   }
 }
 
@@ -169,6 +170,39 @@ function dropBlocks() {
 }
 
 function checkCollision() {
+  for (let i = 0; i < blocks.lengt; i ++) {
+    let currentBlock = blocks[i];
+  }
+}
+
+function reset() {
+  // Reset states
+  canJump = false;
+  starting = true;
+  playing = false;
+  pickingColor = false;
+  colliding = false; 
+
+  // Reset positions
+  characterX = width / 2;
+  characterY = height / 2;
+  characterDy = 0;
+  characterD = 25;
+  characterColor = "white"; 
+
+  // Reset blocks
+  blockSpeed = 2;
+  blocks = [];
+  for (let i = 0; i < 125; i++) {
+    let block = {
+      x: random(width),
+      y: random(-height, 0),
+      w: 40,
+      h: 20,
+      color: random(colors),
+    };
+    blocks.push(block);
+  }
 }
 
 // Begin choosing color and trigger bullet time as well as ball size increase
