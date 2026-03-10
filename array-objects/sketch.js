@@ -11,6 +11,7 @@ let characterY;
 let characterD = 25;
 let characterDy = 0;
 let characterDx = 5;
+let characterColor = "white"
 let gravity = 0.75;
 let jumpStrength = -10;
 
@@ -26,6 +27,7 @@ let colors = ["red", "blue", "white", "purple"];
 let canJump = false;
 let starting = true;
 let playing = false;
+let pickingColor = false;
 
 // Setting up screen
 function setup() {
@@ -61,9 +63,11 @@ function draw() {
     addGravity();
     checkJump();
     jump();
+    characterSize();
     displayCharacter();
     dropBlocks();
     checkCollision();
+    changeColor();
   }
 }
 
@@ -121,9 +125,18 @@ function jump() {
   }
 }
 
+function characterSize() {
+  if (pickingColor) {
+    characterD += 1.1;
+  }
+  else {
+    characterD = 25;
+  }
+}
+
 // Show character on screen
 function displayCharacter() {
-  fill("white");
+  fill(characterColor);
   circle(characterX, characterY, characterD);
 }
 
@@ -133,7 +146,12 @@ function dropBlocks() {
     let currentBlock = blocks[i];
 
     // Add gravity
-    currentBlock.y += blockSpeed;
+    if (pickingColor) {
+      currentBlock.y += blockSpeed * 0.1;
+    }
+    else {
+      currentBlock.y += blockSpeed;
+    }
 
     // Reset block to top of the screen
     if (currentBlock.y > height) {
@@ -153,15 +171,27 @@ function dropBlocks() {
 function checkCollision() {
 }
 
-// Change size of character with mouse scroll
-function mouseWheel(event) {
-  // Decrease size
-  if (event.delta > 0) {
-    characterD = 25;
+// Begin choosing color and trigger bullet time as well as ball size increase
+function changeColor() {
+  if (KeyIsDown(83)) {
+    pickingColor = true;
+    keyPressed()
   }
-  // Increase size
-  else if (event.delta < 0) {
-    characterD = 75;
+}
+
+// Pick color based off of which key is pressed
+function keyPressed() {
+  if (key === "u") {
+    characterColor = "blue"
+  }
+  else if (key === "i") {
+    characterColor = "red"
+  }
+  else if (key === "o") {
+    characterColor = "purple"
+  }
+  else if (key === "p") {
+    characterColor = "white"
   }
 }
 
