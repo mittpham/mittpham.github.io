@@ -192,16 +192,21 @@ function checkCollision() {
     // Find the distance from the closest corner to the character
     let distance = sqrt(pow(characterX - nearestBlockX, 2) + pow(characterY - nearestBlockY, 2));
     
-    // Trigger reset if wrong color and colliding
+    // Trigger events if colliding
     if (distance < characterD / 2) {
+
+      // Trigger reset if wrong color
       if (currentBlock.color !== characterColor) {
         reset();
       }
-    }
-    // Play break sound and break block if matching colors
-    else {
-      breakBlockSound.play();
-      blocks.splice(i, 1);
+
+      // Trigger break sound and break block if right colors
+      else {
+        breakBlockSound.play();
+        currentBlock.y = random(-200, -50); 
+        currentBlock.x = random(width);
+        currentBlock.color = random(colors);
+      }
     }
   }
 }
