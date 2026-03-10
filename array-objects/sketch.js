@@ -3,7 +3,7 @@
 // March 9
 //
 // Extra for Experts:
-// idk
+// Adding sound
 
 // Character variables
 let characterX;
