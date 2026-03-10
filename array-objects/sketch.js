@@ -126,6 +126,7 @@ function jump() {
   }
 }
 
+// Increase the size of the character while in bullet time to prevent stalling
 function characterSize() {
   if (pickingColor) {
     characterD += 0.1;
@@ -169,9 +170,15 @@ function dropBlocks() {
   blockSpeed += speedIncrease;
 }
 
+// Checks if the ball is touching any blocks and if they are the same color
 function checkCollision() {
   for (let i = 0; i < blocks.lengt; i ++) {
     let currentBlock = blocks[i];
+
+    // Trigger reset if wrong color and colliding
+    if (currentBlock.color !== characterColor && colliding) {
+      reset();
+    }
   }
 }
 
