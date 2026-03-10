@@ -11,7 +11,7 @@ let characterY;
 let characterD = 25;
 let characterDy = 0;
 let characterDx = 5;
-let characterColor = "white"
+let characterColor = "white";
 let gravity = 0.75;
 let jumpStrength = -10;
 
@@ -186,18 +186,18 @@ function changeColor() {
 function keyPressed() {
   if (pickingColor) {
     if (key === "u") {
-      characterColor = "blue"
+      characterColor = "blue";
     }
     else if (key === "i") {
-      characterColor = "red"
+      characterColor = "red";
     }
     else if (key === "o") {
-      characterColor = "purple"
+      characterColor = "purple";
     }
     else if (key === "p") {
-      characterColor = "white"
+      characterColor = "white";
     }
-}
+  }
 }
 
 // Start playing when button pressed
