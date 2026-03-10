@@ -203,7 +203,7 @@ function checkCollision() {
       // Trigger break sound and break block if right colors
       else {
         breakBlockSound.play();
-        currentBlock.y = random(-200, -50); 
+        currentBlock.y = random(-100, 0); 
         currentBlock.x = random(width);
         currentBlock.color = random(colors);
       }
