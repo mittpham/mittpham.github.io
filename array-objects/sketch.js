@@ -127,7 +127,7 @@ function jump() {
 
 function characterSize() {
   if (pickingColor) {
-    characterD += 1.1;
+    characterD += 0.5;
   }
   else {
     characterD = 25;
@@ -173,25 +173,31 @@ function checkCollision() {
 
 // Begin choosing color and trigger bullet time as well as ball size increase
 function changeColor() {
-  if (KeyIsDown(83)) {
+  // Triggers with d
+  if (keyIsDown(83)) {
     pickingColor = true;
-    keyPressed()
   }
 }
 
-// Pick color based off of which key is pressed
+// Pick color based off of which key is pressed using u, i, o, and p
 function keyPressed() {
-  if (key === "u") {
-    characterColor = "blue"
-  }
-  else if (key === "i") {
-    characterColor = "red"
-  }
-  else if (key === "o") {
-    characterColor = "purple"
-  }
-  else if (key === "p") {
-    characterColor = "white"
+  if (pickingColor) {
+    if (key === "u") {
+      characterColor = "blue"
+      pickingColor = false;
+    }
+    else if (key === "i") {
+      characterColor = "red"
+      pickingColor = false;
+    }
+    else if (key === "o") {
+      characterColor = "purple"
+      pickingColor = false;
+    }
+    else if (key === "p") {
+      characterColor = "white"
+      pickingColor = false;
+    }
   }
 }
 
