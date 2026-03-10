@@ -16,7 +16,11 @@ let jumpStrength = -10;
 
 // Blocks
 let blocks = [];
-let colors = [];
+let blockSpeed = 2;
+let speedIncrease = 0.0005;
+
+// Colors
+let colors = ["red", "blue", "white", "purple", "pink", "green", "yellow", "orange"];
 
 // State variables
 let canJump = false;
@@ -33,12 +37,13 @@ function setup() {
   characterY = height / 2;
 
   // Spawn blocks
-  for (let i = 0; i < 200; i++) {
+  for (let i = 0; i < 125; i++) {
     let block = {
       x: random(width),
       y: random(-height, 0),
       w: random(20, 40),
       h: 20,
+      color: random(colors),
     };
     blocks.push(block);
   }
@@ -128,18 +133,21 @@ function dropBlocks() {
     let currentBlock = blocks[i];
 
     // Add gravity
-    currentBlock.y += 4;
+    currentBlock.y += blockSpeed;
 
     // Reset block to top of the screen
     if (currentBlock.y > height) {
       currentBlock.x = random(width);
       currentBlock.y = random(-100,0);
+      currentBlock.color = random(colors);
     }
 
     // Display blocks
-    fill(170);
+    fill(currentBlock.color);
     rect(currentBlock.x, currentBlock.y, currentBlock.w, currentBlock.h);
   }
+  // Speed up blocks
+  blockSpeed += speedIncrease;
 }
 
 function checkCollision() {
