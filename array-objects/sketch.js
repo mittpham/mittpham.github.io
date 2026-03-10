@@ -180,7 +180,10 @@ function checkCollision() {
     let nearestBlockY = constrain(characterY, currentBlock.y, currentBlock.y + currentBlock.h);
 
     // Find the distance from the closest corner to the character
-    let distance = 1;
+    let distance = sqrt(pow(characterX - nearestBlockX, 2) + pow(characterY - nearestBlockY, 2));
+    if (distance < characterD) {
+      colliding = true;
+    }
 
     // Trigger reset if wrong color and colliding
     if (currentBlock.color !== characterColor && colliding) {
