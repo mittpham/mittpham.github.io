@@ -127,7 +127,7 @@ function jump() {
 
 function characterSize() {
   if (pickingColor) {
-    characterD += 0.5;
+    characterD += 0.1;
   }
   else {
     characterD = 25;
@@ -177,6 +177,9 @@ function changeColor() {
   if (keyIsDown(83)) {
     pickingColor = true;
   }
+  else {
+    pickingColor = false;
+  }
 }
 
 // Pick color based off of which key is pressed using u, i, o, and p
@@ -184,21 +187,17 @@ function keyPressed() {
   if (pickingColor) {
     if (key === "u") {
       characterColor = "blue"
-      pickingColor = false;
     }
     else if (key === "i") {
       characterColor = "red"
-      pickingColor = false;
     }
     else if (key === "o") {
       characterColor = "purple"
-      pickingColor = false;
     }
     else if (key === "p") {
       characterColor = "white"
-      pickingColor = false;
     }
-  }
+}
 }
 
 // Start playing when button pressed
