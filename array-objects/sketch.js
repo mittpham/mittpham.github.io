@@ -172,7 +172,7 @@ function dropBlocks() {
 
 // Checks if the ball is touching any blocks and if they are the same color
 function checkCollision() {
-  for (let i = 0; i < blocks.lengt; i ++) {
+  for (let i = 0; i < blocks.length; i ++) {
     let currentBlock = blocks[i];
 
     // Determine which corner of the block is the closest to the character
@@ -181,13 +181,12 @@ function checkCollision() {
 
     // Find the distance from the closest corner to the character
     let distance = sqrt(pow(characterX - nearestBlockX, 2) + pow(characterY - nearestBlockY, 2));
-    if (distance < characterD) {
-      colliding = true;
-    }
-
+    
     // Trigger reset if wrong color and colliding
-    if (currentBlock.color !== characterColor && colliding) {
-      reset();
+    if (distance < characterD / 2) {
+      if (currentBlock.color !== characterColor) {
+        reset();
+      }
     }
   }
 }
@@ -198,7 +197,6 @@ function reset() {
   starting = true;
   playing = false;
   pickingColor = false;
-  colliding = false; 
 
   // Reset positions
   characterX = width / 2;
