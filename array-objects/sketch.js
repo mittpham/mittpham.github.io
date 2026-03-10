@@ -175,6 +175,13 @@ function checkCollision() {
   for (let i = 0; i < blocks.lengt; i ++) {
     let currentBlock = blocks[i];
 
+    // Determine which corner of the block is the closest to the character
+    let nearestBlockX = constrain(characterX, currentBlock.x, currentBlock.x + currentBlock.w);
+    let nearestBlockY = constrain(characterY, currentBlock.y, currentBlock.y + currentBlock.h);
+
+    // Find the distance from the closest corner to the character
+    let distance = 1;
+
     // Trigger reset if wrong color and colliding
     if (currentBlock.color !== characterColor && colliding) {
       reset();
