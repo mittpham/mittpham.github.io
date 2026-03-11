@@ -10,10 +10,11 @@ let characterX;
 let characterY;
 let characterD = 25;
 let characterDy = 0;
-let characterDx = 5;
+let characterDx = 2.5;
 let characterColor = "white";
 let gravity = 0.75;
 let jumpStrength = -10;
+let score = 0;
 
 // Blocks
 let blocks = [];
@@ -26,6 +27,7 @@ let colors = ["red", "blue", "white", "purple"];
 // State variables
 let canJump = false;
 let starting = true;
+let controls = false;
 let playing = false;
 let pickingColor = false;
 
@@ -68,6 +70,9 @@ function draw() {
   if (starting) {
     startScreen();
   }
+  else if (controls) {
+    showControls();
+  }
   else if (playing) {
     moveCharacter();
     addGravity();
@@ -84,11 +89,27 @@ function draw() {
 // Create start screen
 function startScreen() {
   fill("white");
-  rect(width / 2 - 150, height / 2 - 100, 300, 200);
+  rect(width / 2 - 150, height / 2 - 300, 300, 200);
   fill("black");
   textSize(32);
   textAlign(CENTER, CENTER);
-  text("Left click to start", width / 2, height / 2);
+  text("Click here to start", width / 2, height / 2 - 200);
+  fill("white");
+  rect(width / 2 - 150, height / 2 + 100, 300, 200);
+  fill("black");
+  textSize(30);
+  textAlign(CENTER, CENTER);
+  text("Click here for controls", width / 2, height / 2 + 200);
+}
+
+// Show the controls for the game
+function showControls() {
+  fill("white");
+  rect(width / 2 - 150, height / 2 - 100, 600, 400);
+  fill("black");
+  textSize(32);
+  textAlign(CENTER, CENTER);
+  text("A and D to move left and right Space or W to jump", width / 2, height / 2);
 }
 
 // Move character with A and D
@@ -197,6 +218,7 @@ function checkCollision() {
 
       // Trigger reset if wrong color
       if (currentBlock.color !== characterColor) {
+        deathSound.play();
         reset();
       }
 
@@ -206,6 +228,7 @@ function checkCollision() {
         currentBlock.y = random(-100, 0); 
         currentBlock.x = random(width);
         currentBlock.color = random(colors);
+        score += 100;
       }
     }
   }
@@ -274,5 +297,10 @@ function mousePressed() {
   if (mouseButton === LEFT && mouseX > width / 2 - 150 && mouseX < width / 2 + 150 && mouseY > height / 2 - 100 && mouseY < height / 2 + 100) {
     starting = false;
     playing = true;
+  }
+  else if (mouseButton === LEFT && mouseX > width / 2 - 150 && mouseX < width / 2 + 150 && mouseY > height / 2 - 100 && mouseY < height / 2 + 100) {
+    controls = true;
+    playing = false;
+    starting = false;
   }
 }
