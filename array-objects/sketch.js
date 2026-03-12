@@ -126,6 +126,15 @@ function showControls() {
 
 // Move character with A and D
 function moveCharacter() {
+
+  // Slow down character when in bullet time
+  if (pickingColor) {
+    characterDx = 1.25;
+  }
+  else {
+    characterDx = 2.5;
+  }
+  
   // Move left
   if (keyIsDown(65)) {
     characterX -= characterDx;
