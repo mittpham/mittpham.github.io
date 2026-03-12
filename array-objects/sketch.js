@@ -55,7 +55,7 @@ function setup() {
   characterY = height / 2;
 
   // Spawn blocks
-  for (let i = 0; i < 300; i++) {
+  for (let i = 0; i < 125; i++) {
     let block = {
       x: random(width),
       y: random(-height, 0),
@@ -67,7 +67,7 @@ function setup() {
   }
 }
 
-// Start game and add in gravity, movement, and jump
+// Activate the starting screen, controls, game over screen, and game
 function draw() {
   background("black");
 
@@ -76,6 +76,9 @@ function draw() {
   }
   else if (controls) {
     showControls();
+  }
+  else if (death) {
+    gameOver();
   }
   else if (playing) {
     moveCharacter();
@@ -115,13 +118,24 @@ function showControls() {
   textSize(32);
   textAlign(CENTER, CENTER);
   text(`Press A and D to move left and right
-    Press Space or W to jump
-    Hold S to enable color switching
-    Press U for blue
-    Press I for red
-    Press O for purple
-    Press P for white
-    Press enter to start`, width / 2, height / 2);
+  Press Space or W to jump
+  Hold S to enable color switching
+  Press U for blue
+  Press I for red
+  Press O for purple
+  Press P for white
+  Press enter to start`, width / 2, height / 2);
+}
+
+// Make the game over screen
+function gameOver() {
+  fill("white");
+  textSize(40);
+  textAlign(CENTER, CENTER);
+  text(`YA LOST
+  Final Score: ${currentScore}
+  High Score: ${highScore}
+  Press enter to play again`, width / 2, height / 2)
 }
 
 // Move character with A and D
@@ -237,10 +251,11 @@ function checkCollision() {
     // Trigger events if colliding
     if (distance < characterD / 2) {
 
-      // Trigger reset if wrong color
+      // Trigger game over if wrong color
       if (currentBlock.color !== characterColor) {
         deathSound.play();
-        reset();
+        playing = false;
+        death = true;
       }
 
       // Trigger break sound and break block if right colors
@@ -301,15 +316,16 @@ function displayScore() {
   fill("white");
   textSize(30);
   textAlign(LEFT, CENTER);
-  text("Current score is " + currentScore, 50, 50);
-  text("High score is " + highScore, 50, 100);
+  text(`Current score is ${currentScore}`, 50, 50);
+  text(`High score is ${highScore}`, 50, 100);
   if (currentScore > highScore) {
     highScore = currentScore;
   }
 }
 
-// Pick color based off of which key is pressed using u, i, o, and p
+// Controls certain key presses during game states
 function keyPressed() {
+  // Pick color based off of which key is pressed using u, i, o, and p
   if (pickingColor) {
     if (key === "u") {
       characterColor = "blue";
@@ -333,10 +349,18 @@ function keyPressed() {
       startPlayingSound.play();
     }
   }
+
+  // Restart game with enter
+  else if (death) {
+    if (keyCode === 13) {
+      reset();
+    }
+  }
 }
 
-// Change game state to playing or controls depending on the button pressed
+// Controls all the mouse click events
 function mousePressed() {
+  // Change game state to playing or controls depending on the button pressed
   if (starting) {
     if (mouseButton === LEFT && mouseX > width / 2 - 150 && mouseX < width / 2 + 150 && mouseY > height / 2 - 300 && mouseY < height / 2 - 100) {
       starting = false;
