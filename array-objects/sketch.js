@@ -3,7 +3,7 @@
 // March 9
 //
 // Extra for Experts:
-// Adding sound
+// Adding sound, collision detection between a rectangle and a circle
 
 // Character variables
 let characterX;
@@ -20,7 +20,7 @@ let highScore = 0;
 // Blocks
 let blocks = [];
 let blockSpeed = 2;
-let speedIncrease = 0.1;
+let speedIncrease = 0.05;
 
 // Colors
 let colors = ["red", "blue", "white", "purple"];
@@ -244,7 +244,7 @@ function checkCollision() {
     let nearestBlockY = constrain(characterY, currentBlock.y, currentBlock.y + currentBlock.h);
 
     // Find the distance from the closest corner to the character
-    let distance = sqrt(pow(characterX - nearestBlockX, 2) + pow(characterY - nearestBlockY, 2));
+    let distance = dist(characterX, characterY, nearestBlockX, nearestBlockY);
     
     // Trigger events if colliding
     if (distance < characterD / 2) {
@@ -275,6 +275,7 @@ function reset() {
   starting = true;
   playing = false;
   pickingColor = false;
+  death = false;
   currentScore = 0;
 
   // Reset positions
@@ -326,22 +327,22 @@ function displayScore() {
 function keyPressed() {
   // Pick color based off of which key is pressed using u, i, o, and p
   if (pickingColor) {
-    if (key === "u") {
+    if (key === "u" || key === "U") {
       characterColor = "blue";
     }
-    else if (key === "i") {
+    else if (key === "i" || key === "I") {
       characterColor = "red";
     }
-    else if (key === "o") {
+    else if (key === "o" || key === "O") {
       characterColor = "purple";
     }
-    else if (key === "p") {
+    else if (key === "p" || key === "P") {
       characterColor = "white";
     }
   }
 
   // Start game from controls with the enter key
-  else if (controls) {
+  if (controls) {
     if (keyCode === 13) {
       controls = false;
       playing = true;
@@ -353,6 +354,9 @@ function keyPressed() {
   else if (death) {
     if (keyCode === 13) {
       reset();
+      starting = false;
+      playing = true;
+      startPlayingSound.play();
     }
   }
 }
