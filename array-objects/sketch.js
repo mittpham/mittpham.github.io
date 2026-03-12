@@ -111,13 +111,13 @@ function showControls() {
   fill("black");
   textSize(32);
   textAlign(CENTER, CENTER);
-  text("A and D to move left and right", width / 2, height / 2 - 175);
-  text("Space or W to jump", width / 2, height / 2 - 125);
+  text("Press A and D to move left and right", width / 2, height / 2 - 175);
+  text("Press Space or W to jump", width / 2, height / 2 - 125);
   text("Hold S to enable color switching", width / 2, height / 2 - 75);
-  text("U for blue", width / 2, height / 2 - 25);
-  text("I for red", width / 2, height / 2 + 25);
-  text("O for purple", width / 2, height / 2 + 75);
-  text("P for white", width / 2, height / 2 + 125);
+  text("Press U for blue", width / 2, height / 2 - 25);
+  text("Press I for red", width / 2, height / 2 + 25);
+  text("Press O for purple", width / 2, height / 2 + 75);
+  text("Press P for white", width / 2, height / 2 + 125);
   text("Press enter to start", width / 2, height / 2 + 175);
 }
 
