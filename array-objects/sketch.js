@@ -14,7 +14,8 @@ let characterDx = 2.5;
 let characterColor = "white";
 let gravity = 0.75;
 let jumpStrength = -10;
-let score = 0;
+let currentScore = 0;
+let highScore = 0;
 
 // Blocks
 let blocks = [];
@@ -85,6 +86,7 @@ function draw() {
     dropBlocks();
     checkCollision();
     changeColor();
+    displayScore();
   }
 }
 
@@ -281,6 +283,11 @@ function changeColor() {
   else {
     pickingColor = false;
   }
+}
+
+// Display current and high score
+function displayScore() {
+  
 }
 
 // Pick color based off of which key is pressed using u, i, o, and p
