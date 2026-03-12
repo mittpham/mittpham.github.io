@@ -5,6 +5,14 @@
 // Extra for Experts:
 // Adding sound, collision detection between a rectangle and a circle
 
+// Ideas to add: 
+// walls that move in
+// icons that show colors and which one your pressing
+// different difficulties
+// remove overlapping blocks
+// add screen shake and particles
+// powerups?
+
 // Character variables
 let characterX;
 let characterY;
