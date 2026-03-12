@@ -20,7 +20,7 @@ let highScore = 0;
 // Blocks
 let blocks = [];
 let blockSpeed = 2;
-let speedIncrease = 0.0005;
+let speedIncrease = 0.1;
 
 // Colors
 let colors = ["red", "blue", "white", "purple"];
@@ -232,8 +232,6 @@ function dropBlocks() {
     fill(currentBlock.color);
     rect(currentBlock.x, currentBlock.y, currentBlock.w, currentBlock.h);
   }
-  // Speed up blocks
-  blockSpeed += speedIncrease;
 }
 
 // Checks if the ball is touching any blocks and if they are the same color
@@ -258,8 +256,9 @@ function checkCollision() {
         death = true;
       }
 
-      // Trigger break sound and break block if right colors
+      // Trigger break sound, speed up blocks, increase score, and move block back to the top
       else {
+        blockSpeed += speedIncrease;
         breakBlockSound.play();
         currentBlock.y = random(-100, 0); 
         currentBlock.x = random(width);
