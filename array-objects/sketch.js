@@ -31,6 +31,7 @@ let starting = true;
 let controls = false;
 let playing = false;
 let pickingColor = false;
+let death = false;
 
 // Sounds
 let breakBlockSound;
@@ -54,7 +55,7 @@ function setup() {
   characterY = height / 2;
 
   // Spawn blocks
-  for (let i = 0; i < 125; i++) {
+  for (let i = 0; i < 300; i++) {
     let block = {
       x: random(width),
       y: random(-height, 0),
@@ -113,14 +114,14 @@ function showControls() {
   fill("black");
   textSize(32);
   textAlign(CENTER, CENTER);
-  text("Press A and D to move left and right", width / 2, height / 2 - 175);
-  text("Press Space or W to jump", width / 2, height / 2 - 125);
-  text("Hold S to enable color switching", width / 2, height / 2 - 75);
-  text("Press U for blue", width / 2, height / 2 - 25);
-  text("Press I for red", width / 2, height / 2 + 25);
-  text("Press O for purple", width / 2, height / 2 + 75);
-  text("Press P for white", width / 2, height / 2 + 125);
-  text("Press enter to start", width / 2, height / 2 + 175);
+  text(`Press A and D to move left and right
+    Press Space or W to jump
+    Hold S to enable color switching
+    Press U for blue
+    Press I for red
+    Press O for purple
+    Press P for white
+    Press enter to start`, width / 2, height / 2);
 }
 
 // Move character with A and D
@@ -239,7 +240,7 @@ function checkCollision() {
         currentBlock.y = random(-100, 0); 
         currentBlock.x = random(width);
         currentBlock.color = random(colors);
-        score += 100;
+        currentScore += 100;
       }
     }
   }
@@ -251,6 +252,7 @@ function reset() {
   starting = true;
   playing = false;
   pickingColor = false;
+  currentScore = 0;
 
   // Reset positions
   characterX = width / 2;
@@ -287,7 +289,14 @@ function changeColor() {
 
 // Display current and high score
 function displayScore() {
-  
+  fill("white");
+  textSize(30);
+  textAlign(LEFT, CENTER);
+  text("Current score is " + currentScore, 50, 50);
+  text("High score is " + highScore, 50, 100);
+  if (currentScore > highScore) {
+    highScore = currentScore;
+  }
 }
 
 // Pick color based off of which key is pressed using u, i, o, and p
@@ -309,7 +318,7 @@ function keyPressed() {
 
   // Start game from controls with the enter key
   else if (controls) {
-    if (keyIsDown(13)) {
+    if (keyCode === 13) {
       controls = false;
       playing = true;
       startPlayingSound.play();
