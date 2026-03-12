@@ -34,11 +34,13 @@ let pickingColor = false;
 // Sounds
 let breakBlockSound;
 let deathSound;
+let startPlayingSound;
 
 // Set up sounds
 function preload() {
   breakBlockSound = loadSound("pop.mp3");
   deathSound = loadSound("vineboom.mp3");
+  startPlayingSound = loadSound("fah.mp3");
 }
 
 // Setting up screen
@@ -88,28 +90,35 @@ function draw() {
 
 // Create start screen
 function startScreen() {
+  // Create the white boxes
   fill("white");
   rect(width / 2 - 150, height / 2 - 300, 300, 200);
+  rect(width / 2 - 150, height / 2 + 100, 300, 200);
+
+  // Create the text
   fill("black");
   textSize(32);
   textAlign(CENTER, CENTER);
   text("Click here to start", width / 2, height / 2 - 200);
-  fill("white");
-  rect(width / 2 - 150, height / 2 + 100, 300, 200);
-  fill("black");
   textSize(30);
-  textAlign(CENTER, CENTER);
   text("Click here for controls", width / 2, height / 2 + 200);
 }
 
 // Show the controls for the game
 function showControls() {
   fill("white");
-  rect(width / 2 - 150, height / 2 - 100, 600, 400);
+  rect(width / 2 - 300, height / 2 - 200, 600, 400);
   fill("black");
   textSize(32);
   textAlign(CENTER, CENTER);
-  text("A and D to move left and right Space or W to jump", width / 2, height / 2);
+  text("A and D to move left and right", width / 2, height / 2 - 175);
+  text("Space or W to jump", width / 2, height / 2 - 125);
+  text("Hold S to enable color switching", width / 2, height / 2 - 75);
+  text("U for blue", width / 2, height / 2 - 25);
+  text("I for red", width / 2, height / 2 + 25);
+  text("O for purple", width / 2, height / 2 + 75);
+  text("P for white", width / 2, height / 2 + 125);
+  text("Press enter to start", width / 2, height / 2 + 175);
 }
 
 // Move character with A and D
@@ -290,17 +299,28 @@ function keyPressed() {
       characterColor = "white";
     }
   }
+
+  // Start game from controls with the enter key
+  else if (controls) {
+    if (keyIsDown(13)) {
+      controls = false;
+      playing = true;
+      startPlayingSound.play();
+    }
+  }
 }
 
-// Start playing when button pressed
+// Change game state to playing or controls depending on the button pressed
 function mousePressed() {
-  if (mouseButton === LEFT && mouseX > width / 2 - 150 && mouseX < width / 2 + 150 && mouseY > height / 2 - 100 && mouseY < height / 2 + 100) {
-    starting = false;
-    playing = true;
-  }
-  else if (mouseButton === LEFT && mouseX > width / 2 - 150 && mouseX < width / 2 + 150 && mouseY > height / 2 - 100 && mouseY < height / 2 + 100) {
-    controls = true;
-    playing = false;
-    starting = false;
+  if (starting) {
+    if (mouseButton === LEFT && mouseX > width / 2 - 150 && mouseX < width / 2 + 150 && mouseY > height / 2 - 300 && mouseY < height / 2 - 100) {
+      starting = false;
+      playing = true;
+      startPlayingSound.play();
+    }
+    else if (mouseButton === LEFT && mouseX > width / 2 - 150 && mouseX < width / 2 + 150 && mouseY > height / 2 + 100 && mouseY < height / 2 + 300) {
+      starting = false;
+      controls = true;
+    }
   }
 }
