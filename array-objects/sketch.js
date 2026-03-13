@@ -42,7 +42,7 @@ let colors = ["red", "blue", "white", "purple"];
 
 // Wall variables
 let wallSpeed = 3;
-let wallSize = 3;
+let wallSize = 0;
 
 // Sounds
 let breakBlockSound;
@@ -66,7 +66,7 @@ function setup() {
   characterY = height / 2;
 
   // Spawn blocks
-  for (let i = 0; i < 125; i++) {
+  for (let i = 0; i < 75; i++) {
     let block = {
       x: random(width),
       y: random(-height, 0),
@@ -80,7 +80,7 @@ function setup() {
 
 // Activate the starting screen, controls, game over screen, and game
 function draw() {
-  background("black");
+  background(20, 20, 20);
 
   if (starting) {
     startScreen();
@@ -97,8 +97,9 @@ function draw() {
     checkJump();
     jump();
     characterSize();
-    displayCharacter();
     dropBlocks();
+    addWalls();
+    displayCharacter();
     checkCollision();
     changeColor();
     displayScore();
@@ -170,16 +171,19 @@ function moveCharacter() {
   // Move left
   if (keyIsDown(65)) {
     characterX -= characterDx;
-    if (characterX < 0 + characterD / 2) {
-      characterX = 0 + characterD / 2;
-    }
   }
+
   // Move right
   if (keyIsDown(68)) {
     characterX += characterDx;
-    if (characterX > width - characterD / 2) {
-      characterX = width - characterD / 2;
-    }
+  }
+
+  // Stop the player from going past the walls
+  if (characterX < wallSize + characterD / 2) {
+    characterX = wallSize + characterD / 2;
+  }
+  if (characterX > width - wallSize - characterD / 2) {
+    characterX = width - wallSize - characterD / 2;
   }
 }
 
@@ -220,12 +224,6 @@ function characterSize() {
   }
 }
 
-// Show character on screen
-function displayCharacter() {
-  fill(characterColor);
-  circle(characterX, characterY, characterD);
-}
-
 // add falling blocks
 function dropBlocks() {
   rectMode(CORNER);
@@ -251,6 +249,33 @@ function dropBlocks() {
     fill(currentBlock.color);
     rect(currentBlock.x, currentBlock.y, currentBlock.w, currentBlock.h);
   }
+}
+
+// Add walls that move in when the player is choosing their color
+function addWalls() {
+  rectMode(CORNER);
+  if (pickingColor) {
+    wallSize += wallSpeed;
+  }
+  else {
+    wallSize = 0;
+  }
+  fill("black")
+  rect(0, 0, wallSize, height);
+  rect(width - wallSize, 0, wallSize, height);
+
+  // Kill player with the walls
+  if (wallSize > width / 2 - characterD / 2) {
+    deathSound.play();
+    playing = false;
+    death = true;
+  }
+}
+
+// Show character on screen
+function displayCharacter() {
+  fill(characterColor);
+  circle(characterX, characterY, characterD);
 }
 
 // Checks if the ball is touching any blocks and if they are the same color
@@ -307,7 +332,7 @@ function reset() {
   // Reset blocks
   blockSpeed = 2;
   blocks = [];
-  for (let i = 0; i < 125; i++) {
+  for (let i = 0; i < 75; i++) {
     let block = {
       x: random(width),
       y: random(-height, 0),
