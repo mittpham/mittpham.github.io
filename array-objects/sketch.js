@@ -12,10 +12,6 @@
 // add screen shake and particles
 // powerups?
 
-// Modes
-textAlign(CENTER, CENTER);
-rectMode(CENTER);
-
 // State variables
 let canJump = false;
 let starting = true;
@@ -39,11 +35,10 @@ let highScore = 0;
 // Block variables
 let blocks = [];
 let blockSpeed = 2;
-let speedIncrease = 0.05;
+let speedIncrease = 0.03;
 
 // Colors
 let colors = ["red", "blue", "white", "purple"];
-let colorKey = "black";
 
 // Wall variables
 let wallSpeed = 3;
@@ -114,11 +109,13 @@ function draw() {
 // Create start screen
 function startScreen() {
   // Create the white boxes
+  rectMode(CENTER);
   fill("white");
   rect(width / 2, height / 3, 300, 200);
   rect(width / 2, height * 2 / 3, 300, 200);
 
   // Create the text
+  textAlign(CENTER, CENTER);
   fill("black");
   textSize(32);
   text("Click here to start", width / 2, height / 3);
@@ -128,8 +125,14 @@ function startScreen() {
 
 // Show the controls for the game
 function showControls() {
+
+  // Create box
+  rectMode(CENTER);
   fill("white");
   rect(width / 2, height / 2, 600, 400);
+
+  // Create text
+  textAlign(CENTER, CENTER);
   fill("black");
   textSize(32);
   text(`Press A and D to move left and right
@@ -144,6 +147,7 @@ function showControls() {
 
 // Make the game over screen
 function gameOver() {
+  textAlign(CENTER, CENTER);
   fill("white");
   textSize(40);
   text(`YA LOST
@@ -224,6 +228,7 @@ function displayCharacter() {
 
 // add falling blocks
 function dropBlocks() {
+  rectMode(CORNER);
   for (let i = 0; i < blocks.length; i ++) {
     let currentBlock = blocks[i];
 
@@ -327,6 +332,7 @@ function changeColor() {
 
 // Display current and high score
 function displayScore() {
+  textAlign(LEFT, CENTER);
   fill("white");
   textSize(30);
   text(`Current score is ${currentScore}`, 50, 50);
@@ -340,22 +346,55 @@ function displayScore() {
 function displayColors() {
 
   // Create the color boxes
+  rectMode(CENTER);
   fill("blue");
-  rect(width / 4, 50, 50, 50, 10, 10, 10 ,10);
+  rect(width / 3, 50, 50, 50, 10, 10, 10 ,10);
   fill("red");
-  rect(width / 4 + 100, 50, 50, 50, 10, 10, 10, 10);
+  rect(width / 3 + 100, 50, 50, 50, 10, 10, 10, 10);
   fill("purple");
-  rect(width / 4 + 200, 50, 50, 50, 10, 10, 10, 10);
+  rect(width / 3 + 200, 50, 50, 50, 10, 10, 10, 10);
   fill("white");
-  rect(width / 4 + 300, 50, 50, 50, 10, 10, 10, 10);
+  rect(width / 3 + 300, 50, 50, 50, 10, 10, 10, 10);
 
   // Add the keys
-  fill(colorKey);
+  textAlign(CENTER, CENTER);
   textSize(30);
-  text("U", width / 4, 50);
-  text("I", width / 4 + 100, 50);
-  text("O", width / 4 + 200, 50);
-  text("P", width / 4 + 300, 50);
+
+  // U key
+  if (keyIsDown(85)) {
+    fill("white");
+  }
+  else {
+    fill("black");
+  }
+  text("U", width / 3, 50);
+
+  // I key
+  if (keyIsDown(73)) {
+    fill("white");
+  }
+  else {
+    fill("black");
+  }
+  text("I", width / 3 + 100, 50);
+
+  // O key
+  if (keyIsDown(79)) {
+    fill("white");
+  }
+  else {
+    fill("black");
+  }
+  text("O", width / 3 + 200, 50);
+
+  // P key
+  if (keyIsDown(80)) {
+    fill("gray");
+  }
+  else {
+    fill("black");
+  }
+  text("P", width / 3 + 300, 50);
 }
 
 // Controls certain key presses during game states
@@ -364,22 +403,15 @@ function keyPressed() {
   if (pickingColor) {
     if (key === "u" || key === "U") {
       characterColor = "blue";
-      colorKey = "white";
     }
     else if (key === "i" || key === "I") {
       characterColor = "red";
-      colorKey = "white";
     }
     else if (key === "o" || key === "O") {
       characterColor = "purple";
-      colorKey = "white";
     }
     else if (key === "p" || key === "P") {
       characterColor = "white";
-      colorKey = "white";
-    }
-    else {
-      colorKey = "black";
     }
   }
 
@@ -407,12 +439,12 @@ function keyPressed() {
 function mousePressed() {
   // Change game state to playing or controls depending on the button pressed
   if (starting) {
-    if (mouseButton === LEFT && mouseX > width / 2 - 150 && mouseX < width / 2 + 150 && mouseY > height / 2 - 300 && mouseY < height / 2 - 100) {
+    if (mouseButton === LEFT && mouseX > width / 2 - 150 && mouseX < width / 2 + 150 && mouseY > height / 3 - 100 && mouseY < height / 3 + 100) {
       starting = false;
       playing = true;
       startPlayingSound.play();
     }
-    else if (mouseButton === LEFT && mouseX > width / 2 - 150 && mouseX < width / 2 + 150 && mouseY > height / 2 + 100 && mouseY < height / 2 + 300) {
+    else if (mouseButton === LEFT && mouseX > width / 2 - 150 && mouseX < width / 2 + 150 && mouseY > height * 2 / 3 - 100 && mouseY < height * 2 / 3 + 100) {
       starting = false;
       controls = true;
     }
