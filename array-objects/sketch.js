@@ -7,11 +7,22 @@
 
 // Ideas to add: 
 // walls that move in
-// icons that show colors and which one your pressing
 // different difficulties
 // remove overlapping blocks
 // add screen shake and particles
 // powerups?
+
+// Modes
+textAlign(CENTER, CENTER);
+rectMode(CENTER);
+
+// State variables
+let canJump = false;
+let starting = true;
+let controls = false;
+let playing = false;
+let pickingColor = false;
+let death = false;
 
 // Character variables
 let characterX;
@@ -25,21 +36,18 @@ let jumpStrength = -10;
 let currentScore = 0;
 let highScore = 0;
 
-// Blocks
+// Block variables
 let blocks = [];
 let blockSpeed = 2;
 let speedIncrease = 0.05;
 
 // Colors
 let colors = ["red", "blue", "white", "purple"];
+let colorKey = "black";
 
-// State variables
-let canJump = false;
-let starting = true;
-let controls = false;
-let playing = false;
-let pickingColor = false;
-let death = false;
+// Wall variables
+let wallSpeed = 3;
+let wallSize = 3;
 
 // Sounds
 let breakBlockSound;
@@ -99,6 +107,7 @@ function draw() {
     checkCollision();
     changeColor();
     displayScore();
+    displayColors();
   }
 }
 
@@ -106,25 +115,23 @@ function draw() {
 function startScreen() {
   // Create the white boxes
   fill("white");
-  rect(width / 2 - 150, height / 2 - 300, 300, 200);
-  rect(width / 2 - 150, height / 2 + 100, 300, 200);
+  rect(width / 2, height / 3, 300, 200);
+  rect(width / 2, height * 2 / 3, 300, 200);
 
   // Create the text
   fill("black");
   textSize(32);
-  textAlign(CENTER, CENTER);
-  text("Click here to start", width / 2, height / 2 - 200);
+  text("Click here to start", width / 2, height / 3);
   textSize(30);
-  text("Click here for controls", width / 2, height / 2 + 200);
+  text("Click here for controls", width / 2, height * 2 / 3);
 }
 
 // Show the controls for the game
 function showControls() {
   fill("white");
-  rect(width / 2 - 300, height / 2 - 200, 600, 400);
+  rect(width / 2, height / 2, 600, 400);
   fill("black");
   textSize(32);
-  textAlign(CENTER, CENTER);
   text(`Press A and D to move left and right
   Press Space or W to jump
   Hold S to enable color switching
@@ -139,11 +146,10 @@ function showControls() {
 function gameOver() {
   fill("white");
   textSize(40);
-  textAlign(CENTER, CENTER);
   text(`YA LOST
   Final Score: ${currentScore}
   High Score: ${highScore}
-  Press enter to play again`, width / 2, height / 2)
+  Press enter to play again`, width / 2, height / 2);
 }
 
 // Move character with A and D
@@ -323,12 +329,33 @@ function changeColor() {
 function displayScore() {
   fill("white");
   textSize(30);
-  textAlign(LEFT, CENTER);
   text(`Current score is ${currentScore}`, 50, 50);
   text(`High score is ${highScore}`, 50, 100);
   if (currentScore > highScore) {
     highScore = currentScore;
   }
+}
+
+// Display the colors according to the keys
+function displayColors() {
+
+  // Create the color boxes
+  fill("blue");
+  rect(width / 4, 50, 50, 50, 10, 10, 10 ,10);
+  fill("red");
+  rect(width / 4 + 100, 50, 50, 50, 10, 10, 10, 10);
+  fill("purple");
+  rect(width / 4 + 200, 50, 50, 50, 10, 10, 10, 10);
+  fill("white");
+  rect(width / 4 + 300, 50, 50, 50, 10, 10, 10, 10);
+
+  // Add the keys
+  fill(colorKey);
+  textSize(30);
+  text("U", width / 4, 50);
+  text("I", width / 4 + 100, 50);
+  text("O", width / 4 + 200, 50);
+  text("P", width / 4 + 300, 50);
 }
 
 // Controls certain key presses during game states
@@ -337,15 +364,22 @@ function keyPressed() {
   if (pickingColor) {
     if (key === "u" || key === "U") {
       characterColor = "blue";
+      colorKey = "white";
     }
     else if (key === "i" || key === "I") {
       characterColor = "red";
+      colorKey = "white";
     }
     else if (key === "o" || key === "O") {
       characterColor = "purple";
+      colorKey = "white";
     }
     else if (key === "p" || key === "P") {
       characterColor = "white";
+      colorKey = "white";
+    }
+    else {
+      colorKey = "black";
     }
   }
 
