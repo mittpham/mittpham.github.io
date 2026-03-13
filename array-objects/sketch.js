@@ -3,7 +3,9 @@
 // March 9
 //
 // Extra for Experts:
-// Adding sound, collision detection between a rectangle and a circle
+// Adding sound, collision between different shapes, using new functions (constrain and map)
+// https://editor.p5js.org/c23fk/sketches/cpT9iZI5l - collision detection between a rectangle and a circle
+// https://editor.p5js.org/P5FOS/sketches/Oqg5p6jDE - map()
 
 // Ideas to add: 
 // walls that move in
@@ -53,7 +55,7 @@ let startPlayingSound;
 function preload() {
   breakBlockSound = loadSound("pop.mp3");
   deathSound = loadSound("vineboom.mp3");
-  startPlayingSound = loadSound("fah.mp3");
+  startPlayingSound = loadSound("start.mp3");
 }
 
 // Setting up screen
@@ -92,6 +94,7 @@ function draw() {
     gameOver();
   }
   else if (playing) {
+    shakeWalls();
     moveCharacter();
     addGravity();
     checkJump();
@@ -155,6 +158,14 @@ function gameOver() {
   Final Score: ${currentScore}
   High Score: ${highScore}
   Press enter to play again`, width / 2, height / 2);
+}
+
+// Shake the walls as they get closer to the center
+function shakeWalls() {
+  if (pickingColor) {
+    let shiftAmount = map(wallSize, 0, width / 2 - characterD / 2, 0, 20);
+    translate(random(-shiftAmount, shiftAmount), random(-shiftAmount, shiftAmount));
+  }
 }
 
 // Move character with A and D
