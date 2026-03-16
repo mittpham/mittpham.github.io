@@ -8,9 +8,9 @@
 // https://editor.p5js.org/P5FOS/sketches/Oqg5p6jDE - map()
 
 // Ideas to add: 
-// walls that move in
 // different difficulties
 // remove overlapping blocks
+// combo counter
 // add screen shake and particles
 // powerups?
 
@@ -50,12 +50,16 @@ let wallSize = 0;
 let breakBlockSound;
 let deathSound;
 let startPlayingSound;
+let switchColorSound;
+let wallShakeSound;
 
 // Set up sounds
 function preload() {
   breakBlockSound = loadSound("pop.mp3");
   deathSound = loadSound("vineboom.mp3");
   startPlayingSound = loadSound("start.mp3");
+  switchColorSound = loadSound("click.mp3");
+  wallShakeSound = loadSound("guardian.mp3");
 }
 
 // Setting up screen
@@ -68,7 +72,7 @@ function setup() {
   characterY = height / 2;
 
   // Spawn blocks
-  for (let i = 0; i < 75; i++) {
+  for (let i = 0; i < 100; i++) {
     let block = {
       x: random(width),
       y: random(-height, 0),
@@ -82,7 +86,7 @@ function setup() {
 
 // Activate the starting screen, controls, game over screen, and game
 function draw() {
-  background(20, 20, 20);
+  background(50, 50, 50);
 
   if (starting) {
     startScreen();
@@ -163,8 +167,10 @@ function gameOver() {
 // Shake the walls as they get closer to the center
 function shakeWalls() {
   if (pickingColor) {
-    let shiftAmount = map(wallSize, 0, width / 2 - characterD / 2, 0, 20);
+    let shiftAmount = map(wallSize, width / 4, width / 2 - characterD / 2, 0, 10, true);
+    let soundVolume = map(wallSize, width / 4, width / 2 - characterD / 2, 0, 1, true);
     translate(random(-shiftAmount, shiftAmount), random(-shiftAmount, shiftAmount));
+    wallShakeSound.play();
   }
 }
 
@@ -228,7 +234,7 @@ function jump() {
 // Increase the size of the character while in bullet time to prevent stalling
 function characterSize() {
   if (pickingColor) {
-    characterD += 0.1;
+    characterD += 0.2;
   }
   else {
     characterD = 25;
@@ -271,7 +277,7 @@ function addWalls() {
   else {
     wallSize = 0;
   }
-  fill("black")
+  fill("black");
   rect(0, 0, wallSize, height);
   rect(width - wallSize, 0, wallSize, height);
 
@@ -289,7 +295,7 @@ function displayCharacter() {
   circle(characterX, characterY, characterD);
 }
 
-// Checks if the ball is touching any blocks and if they are the same color
+// Checks if the character is touching any blocks and if they are the same color
 function checkCollision() {
   for (let i = 0; i < blocks.length; i ++) {
     let currentBlock = blocks[i];
@@ -319,6 +325,7 @@ function checkCollision() {
         currentBlock.x = random(width);
         currentBlock.color = random(colors);
         currentScore += 100;
+        addBlocks();
       }
     }
   }
@@ -343,7 +350,7 @@ function reset() {
   // Reset blocks
   blockSpeed = 2;
   blocks = [];
-  for (let i = 0; i < 75; i++) {
+  for (let i = 0; i < 100; i++) {
     let block = {
       x: random(width),
       y: random(-height, 0),
@@ -355,7 +362,7 @@ function reset() {
   }
 }
 
-// Begin choosing color and trigger bullet time as well as ball size increase
+// Begin choosing color and trigger bullet time as well as character size increase
 function changeColor() {
   // Triggers with d
   if (keyIsDown(83)) {
@@ -433,21 +440,36 @@ function displayColors() {
   text("P", width / 3 + 300, 50);
 }
 
+function addBlocks() {
+  let block = {
+    x: random(width),
+    y: random(-height, 0),
+    w: 40,
+    h: 20,
+    color: random(colors),
+  };
+  blocks.push(block);
+}
+
 // Controls certain key presses during game states
 function keyPressed() {
   // Pick color based off of which key is pressed using u, i, o, and p
   if (pickingColor) {
     if (key === "u" || key === "U") {
       characterColor = "blue";
+      switchColorSound.play();
     }
     else if (key === "i" || key === "I") {
       characterColor = "red";
+      switchColorSound.play();
     }
     else if (key === "o" || key === "O") {
       characterColor = "purple";
+      switchColorSound.play();
     }
     else if (key === "p" || key === "P") {
       characterColor = "white";
+      switchColorSound.play();
     }
   }
 
