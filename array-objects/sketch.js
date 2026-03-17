@@ -167,10 +167,23 @@ function gameOver() {
 // Shake the walls as they get closer to the center
 function shakeWalls() {
   if (pickingColor) {
+    // Create variables to determine how loud or shaky
     let shiftAmount = map(wallSize, width / 4, width / 2 - characterD / 2, 0, 10, true);
     let soundVolume = map(wallSize, width / 4, width / 2 - characterD / 2, 0, 1, true);
+
+    // Apply variables to game
     translate(random(-shiftAmount, shiftAmount), random(-shiftAmount, shiftAmount));
-    wallShakeSound.play();
+    wallShakeSound.setVolume(soundVolume);
+    if (!wallShakeSound.isPlaying()) {
+      wallShakeSound.play();
+    }
+  }
+
+  // Prevent the sound from looping
+  else {
+    if (wallShakeSound.isPlaying()) {
+      wallShakeSound.stop();
+    }
   }
 }
 
@@ -278,14 +291,15 @@ function addWalls() {
     wallSize = 0;
   }
   fill("black");
-  rect(0, 0, wallSize, height);
-  rect(width - wallSize, 0, wallSize, height);
+  rect(0, 0, wallSize, height + 20);
+  rect(width - wallSize, 0, wallSize, height + 20);
 
   // Kill player with the walls
   if (wallSize > width / 2 - characterD / 2) {
     deathSound.play();
     playing = false;
     death = true;
+    wallShakeSound.stop();
   }
 }
 
