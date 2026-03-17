@@ -119,8 +119,8 @@ function startScreen() {
   // Create the white boxes
   rectMode(CENTER);
   fill("white");
-  rect(width / 2, height / 3, 300, 200);
-  rect(width / 2, height * 2 / 3, 300, 200);
+  rect(width / 2, height / 3, 300, 200, 20, 20, 20, 20);
+  rect(width / 2, height * 2 / 3, 300, 200, 20, 20, 20, 20);
 
   // Create the text
   textAlign(CENTER, CENTER);
@@ -137,7 +137,7 @@ function showControls() {
   // Create box
   rectMode(CENTER);
   fill("white");
-  rect(width / 2, height / 2, 600, 400);
+  rect(width / 2, height / 2, 600, 400, 40, 40, 40, 40);
 
   // Create text
   textAlign(CENTER, CENTER);
@@ -169,12 +169,12 @@ function shakeWalls() {
   if (pickingColor) {
     // Create variables to determine how loud or shaky
     let shiftAmount = map(wallSize, width / 4, width / 2 - characterD / 2, 0, 10, true);
-    let soundVolume = map(wallSize, width / 4, width / 2 - characterD / 2, 0, 1, true);
+    let soundVolume = map(wallSize, width / 4, width / 2 - characterD / 2, 0.5, 1, true);
 
     // Apply variables to game
     translate(random(-shiftAmount, shiftAmount), random(-shiftAmount, shiftAmount));
     wallShakeSound.setVolume(soundVolume);
-    if (!wallShakeSound.isPlaying()) {
+    if (!wallShakeSound.isPlaying() && wallSize >= width / 4) {
       wallShakeSound.play();
     }
   }
