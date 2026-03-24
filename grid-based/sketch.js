@@ -5,6 +5,7 @@
 // Extra for Experts:
 // who knows
 // https://p5js.org/examples/imported-media-image-transparency/ - image opacity
+// https://editor.p5js.org/MarcoGaLo/sketches/2WSdSF7nx - candy crush reference
 
 // Grid variables
 const CELL_SIZE = 80;
@@ -21,8 +22,6 @@ let redGem;
 
 // Track the player clicks
 let currentGem = null;
-firstClick = null;
-secondClick = null;
 
 // Load gem images
 function preload() {
@@ -105,24 +104,35 @@ function displayGrid() {
   }
 }
 
+function matchGems() {
+  
+}
+
 // Click two adjacent gems to switch them
 function mousePressed() {
   let gemX = Math.floor(mouseX / CELL_SIZE);
   let gemY = Math.floor(mouseY / CELL_SIZE);
 
+  // Make sure that the click is within the grid
   if (gemX >= 0 && gemX < COLUMNS && gemY >= 0 && gemY < ROWS) {
 
-    if (firstClick === null) {
-      firstClick = grid[y][x];
+    // Select the first gem if nothing has been clicked
+    if (currentGem === null) {
+      currentGem = {
+        x: gemX,
+        y: gemY
+      };
     }
-    if (firstClick !== null & grid[y][x] !== firstClick) {
-      secondClick = grid[y][x];
-    }
+    else {
+      // Swap the two gems
+      if (Math.abs(currentGem.x - gemX) + Math.abs(currentGem.y - gemY) <= 1) {
+        temporaryGem = grid[currentGem.y][currentGem.x];
+        grid[currentGem.y][currentGem.x] = grid[gemY][gemX];
+        grid[gemY][gemX] = temporaryGem;
+      }
 
-    if (Math.abs(currentGem.x - gemX) <= 1 && Math.abs(currentGem.y - gemY) <= 1) {
-      firstClick = secondClick;
+      // Reset player click
+      currentGem = null;
     }
-
-    console.log(firstClick, secondClick);
   }
 }
