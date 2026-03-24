@@ -19,8 +19,10 @@ let orangeGem;
 let purpleGem;
 let redGem;
 
-// Track which gem the player is clicking
+// Track the player clicks
 let currentGem = null;
+firstClick = null;
+secondClick = null;
 
 // Load gem images
 function preload() {
@@ -109,11 +111,18 @@ function mousePressed() {
   let gemY = Math.floor(mouseY / CELL_SIZE);
 
   if (gemX >= 0 && gemX < COLUMNS && gemY >= 0 && gemY < ROWS) {
-    currentGem = {
-      x: gemX,
-      y: gemY
-    };
 
+    if (firstClick === null) {
+      firstClick = grid[y][x];
+    }
+    if (firstClick !== null & grid[y][x] !== firstClick) {
+      secondClick = grid[y][x];
+    }
 
+    if (Math.abs(currentGem.x - gemX) <= 1 && Math.abs(currentGem.y - gemY) <= 1) {
+      firstClick = secondClick;
+    }
+
+    console.log(firstClick, secondClick);
   }
 }
