@@ -104,8 +104,34 @@ function displayGrid() {
   }
 }
 
+// Check if there are three matching gems and remove them
 function matchGems() {
-  
+
+  // Create a new empty array
+  let matchGrid = [];
+
+  for (let y = 0; y < ROWS; y ++) {
+    matchGrid.push([]);
+    for (let x = 0; x < COLUMNS; x ++) {
+      matchGrid[y].push(-1);
+    }
+  }
+
+  // Check every cell
+  for (let y = 0; y < ROWS; y ++) {
+    for (let x = 0; x < COLUMNS; x ++) {
+
+      let gemType = grid[y][x];
+
+      if (x - 1 >= 0 && x + 1 < COLUMNS) {
+        if (grid[y][x - 1] === gemType && grid[y][x + 1] === gemType) {
+          matchGrid[y][x] = -1;
+          matchGrid[y][x - 1] = -1;
+          matchGrid[y][x + 1] = -1;
+        }
+      }
+    }
+  }
 }
 
 // Click two adjacent gems to switch them
