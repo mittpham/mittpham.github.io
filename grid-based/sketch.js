@@ -37,11 +37,13 @@ function setup() {
   background("black");
   createCanvas(ROWS * CELL_SIZE, COLUMNS * CELL_SIZE);
   grid = generateGrid(ROWS, COLUMNS);
+  matchGems();
 }
 
 // Show grid
 function draw() {
   displayGrid();
+  matchGems();
 }
 
 // Generate a random grid array
@@ -123,6 +125,7 @@ function matchGems() {
 
       let gemType = grid[y][x];
 
+      // Check for horizontal matches
       if (x - 1 >= 0 && x + 1 < COLUMNS) {
         if (grid[y][x - 1] === gemType && grid[y][x + 1] === gemType) {
           matchGrid[y][x] = -1;
@@ -130,8 +133,19 @@ function matchGems() {
           matchGrid[y][x + 1] = -1;
         }
       }
+
+      // Check for vertical matches
+      if (y - 1 >= 0 && y + 1 < ROWS) {
+        if (grid[y - 1][x] === gemType && grid[y + 1][x] === gemType) {
+          matchGrid[y][x] = -1;
+          matchGrid[y - 1][x] = -1;
+          matchGrid[y + 1][x] = -1;
+        }
+      }
     }
   }
+
+  return matchGrid;
 }
 
 // Click two adjacent gems to switch them
