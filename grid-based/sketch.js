@@ -11,9 +11,20 @@
 const CELL_SIZE = 80;
 const ROWS = 8;
 const COLUMNS = 8;
+const HALF_OPACITY = 127;
+const EMPTY_CELL = -1;
+const UNHIGHLIGHTED_CELL = 1;
+const HIGHLIGHTED_CELL = 4;
+
 let grid;
 
-// Gems
+// Gems variables and constants
+const BLUE_GEM = 0;
+const GREEN_GEM = 1;
+const ORANGE_GEM = 2;
+const PURPLE_GEM = 3;
+const RED_GEM = 4;
+
 let blueGem;
 let greenGem;
 let orangeGem;
@@ -43,7 +54,6 @@ function setup() {
 // Show grid
 function draw() {
   displayGrid();
-  matchGems();
 }
 
 // Generate a random grid array
@@ -68,39 +78,44 @@ function displayGrid() {
       let currentX = Math.floor(mouseX / CELL_SIZE);
       let currentY = Math.floor(mouseY / CELL_SIZE);
       if (currentX === x && currentY === y) {
-        strokeWeight(4);
+        strokeWeight(HIGHLIGHTED_CELL);
         stroke("white");
       }
       else {
-        strokeWeight(1);
+        strokeWeight(UNHIGHLIGHTED_CELL);
         stroke("black");
       }
-      fill(200);
+      fill(50);
       rect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
 
       // Reduce opacity of current gem if clicked
       if (currentGem !== null && currentGem.x === x && currentGem.y === y) {
-        tint(255, 127);
+        tint(255, HALF_OPACITY);
       }
       else {
         noTint();
       }
 
       // Load image for each respective number
-      if (grid[y][x] === 0) {
-        image(blueGem, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
-      }
-      else if (grid[y][x] === 1) {
-        image(greenGem, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
-      }
-      else if (grid[y][x] === 2) {
-        image(orangeGem, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
-      }
-      else if (grid[y][x] === 3) {
-        image(purpleGem, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
-      }
-      else if (grid[y][x] === 4) {
-        image(redGem, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+      if (grid[y][x] !== EMPTY_CELL) {
+        if (grid[y][x] === BLUE_GEM) {
+          image(blueGem, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+        }
+        else if (grid[y][x] === GREEN_GEM) {
+          image(greenGem, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+        }
+        else if (grid[y][x] === ORANGE_GEM) {
+          image(orangeGem, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+        }
+        else if (grid[y][x] === PURPLE_GEM) {
+          image(purpleGem, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+        }
+        else if (grid[y][x] === RED_GEM) {
+          image(redGem, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+        }
+        else if (grid[y][x] === EMPTY_CELL) {
+          square(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE);
+        }
       }
     }
   }
@@ -128,19 +143,33 @@ function matchGems() {
       // Check for horizontal matches
       if (x - 1 >= 0 && x + 1 < COLUMNS) {
         if (grid[y][x - 1] === gemType && grid[y][x + 1] === gemType) {
-          matchGrid[y][x] = -1;
-          matchGrid[y][x - 1] = -1;
-          matchGrid[y][x + 1] = -1;
+          matchGrid[y][x] = true;
+          matchGrid[y][x - 1] = true;
+          matchGrid[y][x + 1] = true;
+        }
+        else {
+          matchGrid[y][x] = grid[y][x];
         }
       }
 
       // Check for vertical matches
       if (y - 1 >= 0 && y + 1 < ROWS) {
         if (grid[y - 1][x] === gemType && grid[y + 1][x] === gemType) {
-          matchGrid[y][x] = -1;
-          matchGrid[y - 1][x] = -1;
-          matchGrid[y + 1][x] = -1;
+          matchGrid[y][x] = true;
+          matchGrid[y - 1][x] = true;
+          matchGrid[y + 1][x] = true;
         }
+        else {
+          matchGrid[y][x] = grid[y][x];
+        }
+      }
+    }
+  }
+
+  for (let y = 0; y < ROWS; y ++) {
+    for (let x = 0; x < COLUMNS; x ++) {
+      if (matchGrid[y][x]) {
+        matchGrid[y][x] = EMPTY_CELL;
       }
     }
   }
@@ -150,6 +179,7 @@ function matchGems() {
 
 // Click two adjacent gems to switch them
 function mousePressed() {
+  grid = matchGems();
   let gemX = Math.floor(mouseX / CELL_SIZE);
   let gemY = Math.floor(mouseY / CELL_SIZE);
 
@@ -165,7 +195,7 @@ function mousePressed() {
     }
     else {
       // Swap the two gems
-      if (Math.abs(currentGem.x - gemX) + Math.abs(currentGem.y - gemY) <= 1) {
+      if (Math.abs(currentGem.x - gemX) + Math.abs(currentGem.y - gemY) === 1) {
         temporaryGem = grid[currentGem.y][currentGem.x];
         grid[currentGem.y][currentGem.x] = grid[gemY][gemX];
         grid[gemY][gemX] = temporaryGem;
