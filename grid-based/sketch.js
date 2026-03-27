@@ -188,13 +188,13 @@ function refillGems() {
 // Pull gems down to the floor
 function dropGems() {
   for (let x = 0; x < COLUMNS; x ++) {
-    for (let y = 0; y < ROWS; y ++) {
+    for (let y = ROWS - 1; y >= 0; y --) {
       if (grid[y][x] === EMPTY_CELL) {
-        for (let y = grid[y]; y > ROWS; y --) {
-          let gemAbove = grid[y][x];
-
-          if (grid[y][x] !== EMPTY_CELL) {
-            grid[y][x] === gemAbove;
+        for (let aboveY = y - 1; aboveY >= 0; aboveY --) {
+          if (grid[aboveY][x] !== EMPTY_CELL) {
+            grid[y][x] = grid[aboveY][x];
+            grid[aboveY][x] = EMPTY_CELL;
+            break;
           }
         }
       }
@@ -224,6 +224,7 @@ function mousePressed() {
         grid[currentGem.y][currentGem.x] = grid[gemY][gemX];
         grid[gemY][gemX] = temporaryGem;
         matchGems();
+        dropGems();
         refillGems();
       }
 
