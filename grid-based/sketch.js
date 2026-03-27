@@ -185,6 +185,23 @@ function refillGems() {
   }
 }
 
+// Pull gems down to the floor
+function dropGems() {
+  for (let x = 0; x < COLUMNS; x ++) {
+    for (let y = 0; y < ROWS; y ++) {
+      if (grid[y][x] === EMPTY_CELL) {
+        for (let y = grid[y]; y > ROWS; y --) {
+          let gemAbove = grid[y][x];
+
+          if (grid[y][x] !== EMPTY_CELL) {
+            grid[y][x] === gemAbove;
+          }
+        }
+      }
+    }
+  }
+}
+
 // Click two adjacent gems to switch them
 function mousePressed() {
   let gemX = Math.floor(mouseX / CELL_SIZE);
