@@ -7,6 +7,17 @@
 // https://p5js.org/examples/imported-media-image-transparency/ - image opacity
 // https://editor.p5js.org/MarcoGaLo/sketches/2WSdSF7nx - candy crush reference
 
+// Game state variables
+waiting = true; 
+dropping = false;
+matching = false;
+
+// Timer variables and constants
+const MATCHING_GEMS_DELAY = 500;
+const DROPPING_GEMS_DELAY = 200;
+
+let gameStateTimer = 0;
+
 // Grid variables
 const CELL_SIZE = 80;
 const ROWS = 8;
@@ -24,16 +35,18 @@ const GREEN_GEM = 1;
 const ORANGE_GEM = 2;
 const PURPLE_GEM = 3;
 const RED_GEM = 4;
-let gems = [BLUE_GEM, GREEN_GEM, ORANGE_GEM, PURPLE_GEM, RED_GEM];
 
+let gems = [BLUE_GEM, GREEN_GEM, ORANGE_GEM, PURPLE_GEM, RED_GEM];
+let matchingGems = [];
 let blueGemImage;
 let greenGemImage;
 let orangeGemImage;
 let purpleGemImage;
 let redGemImage;
 
-// Track the player clicks
+// Track the player clicks and any matches
 let currentGem = null;
+let gemMatches = false;
 
 // Load gem images
 function preload() {
@@ -56,6 +69,69 @@ function setup() {
 // Show grid
 function draw() {
   displayGrid();
+
+  // Control game states
+  if (matching) {
+    removeMatches();
+  }
+  else if (dropping) {
+    dropGems();
+  }
+}
+
+// Remove matches after they are highlighted
+function removeMatches() {
+  if (millis() > MATCHING_GEMS_DELAY + gameStateTimer) {
+    for (let y = 0; y < ROWS; y ++) {
+      for (let x = 0; x < COLUMNS; x ++) {
+        if (matchingGems[y][x] === true) {
+          grid[y][x] = EMPTY_CELL;
+        }
+      }
+    }
+
+    // Reset timer and matches, trigger the dropping
+    matchingGems = [];
+    matching = false;
+    waiting = false;
+    dropping = true;
+    gameStateTimer = millis();
+  }
+}
+
+// Drop all gems until there is only empty cells at the top
+function dropGems() {
+  if (millis() > DROPPING_GEMS_DELAY + gameStateTimer) {
+
+    // If gems did move then reset the timer
+    if (dropOneGem()) {
+      gameStateTimer = millis();
+    }
+    // If they didn't move then refill the gems and reset states
+    else {
+      refillGems();
+      dropping = false;
+      waiting = true;
+    }
+  }
+}
+
+// Drop one gem down
+function dropOneGem() {
+  let movingGems = false;
+
+  // Check all cells and find an empty cell, look above the empty cell for a gem and swap them
+  for (let x = 0; x < COLUMNS; x ++) {
+    for (let y = ROWS - 1; y > 0; y --) {
+      if (grid[y][x] === EMPTY_CELL && grid[y - 1][x] !== EMPTY_CELL) {
+        grid[y][x] = grid[y - 1][x];
+        grid[y - 1][x] = EMPTY_CELL;
+        movingGems = true;
+      }
+    }
+  }
+
+  return movingGems;  
 }
 
 // Generate a random grid array
@@ -76,10 +152,10 @@ function displayGrid() {
   for (let y = 0; y < ROWS; y ++) {
     for (let x = 0; x < COLUMNS; x ++) {
 
-      // Highlight current gem
+      // Highlight current gem or matching gems
       let currentX = Math.floor(mouseX / CELL_SIZE);
       let currentY = Math.floor(mouseY / CELL_SIZE);
-      if (currentX === x && currentY === y) {
+      if (currentX === x && currentY === y || matchingGems.length > 0 && matchingGems[y][x]) {
         strokeWeight(HIGHLIGHTED_CELL);
         stroke("white");
       }
@@ -123,11 +199,12 @@ function displayGrid() {
   }
 }
 
-// Check if there are three matching gems and remove them
+// Check if there are three matching gems
 function matchGems() {
 
   // Create a new empty array
   let matchGrid = [];
+  gemMatches = false;
 
   for (let y = 0; y < ROWS; y ++) {
     matchGrid.push([]);
@@ -148,6 +225,7 @@ function matchGems() {
           matchGrid[y][x] = true;
           matchGrid[y][x - 1] = true;
           matchGrid[y][x + 1] = true;
+          gemMatches = true;
         }
       }
 
@@ -157,16 +235,8 @@ function matchGems() {
           matchGrid[y][x] = true;
           matchGrid[y - 1][x] = true;
           matchGrid[y + 1][x] = true;
+          gemMatches = true;
         }
-      }
-    }
-  }
-
-  // Remove any matches
-  for (let y = 0; y < ROWS; y ++) {
-    for (let x = 0; x < COLUMNS; x ++) {
-      if (matchGrid[y][x] === true) {
-        grid[y][x] = EMPTY_CELL;
       }
     }
   }
@@ -185,51 +255,46 @@ function refillGems() {
   }
 }
 
-// Pull gems down to the floor
-function dropGems() {
-  for (let x = 0; x < COLUMNS; x ++) {
-    for (let y = ROWS - 1; y >= 0; y --) {
-      if (grid[y][x] === EMPTY_CELL) {
-        for (let aboveY = y - 1; aboveY >= 0; aboveY --) {
-          if (grid[aboveY][x] !== EMPTY_CELL) {
-            grid[y][x] = grid[aboveY][x];
-            grid[aboveY][x] = EMPTY_CELL;
-            break;
-          }
-        }
-      }
-    }
-  }
-}
-
 // Click two adjacent gems to switch them
 function mousePressed() {
-  let gemX = Math.floor(mouseX / CELL_SIZE);
-  let gemY = Math.floor(mouseY / CELL_SIZE);
 
-  // Make sure that the click is within the grid
-  if (gemX >= 0 && gemX < COLUMNS && gemY >= 0 && gemY < ROWS) {
+  // Make sure that the game currently isn't moving or matching gems
+  if (waiting) {
+    let gemX = Math.floor(mouseX / CELL_SIZE);
+    let gemY = Math.floor(mouseY / CELL_SIZE);
 
-    // Select the first gem if nothing has been clicked
-    if (currentGem === null) {
-      currentGem = {
-        x: gemX,
-        y: gemY
-      };
-    }
-    else {
-      // Swap the two gems
-      if (Math.abs(currentGem.x - gemX) + Math.abs(currentGem.y - gemY) === 1) {
-        let temporaryGem = grid[currentGem.y][currentGem.x];
-        grid[currentGem.y][currentGem.x] = grid[gemY][gemX];
-        grid[gemY][gemX] = temporaryGem;
-        matchGems();
-        dropGems();
-        refillGems();
+    // Make sure that the click is within the grid
+    if (gemX >= 0 && gemX < COLUMNS && gemY >= 0 && gemY < ROWS) {
+
+      // Select the first gem if nothing has been clicked
+      if (currentGem === null) {
+        currentGem = {
+          x: gemX,
+          y: gemY
+        };
       }
+      else {
+        // Swap the two gems
+        if (Math.abs(currentGem.x - gemX) + Math.abs(currentGem.y - gemY) === 1) {
+          let temporaryGem = grid[currentGem.y][currentGem.x];
+          grid[currentGem.y][currentGem.x] = grid[gemY][gemX];
+          grid[gemY][gemX] = temporaryGem;
 
-      // Reset player click
-      currentGem = null;
+          let newGemGrid = matchGems();
+
+          // Activate matches
+          if (gemMatches) {
+            matchingGems = newGemGrid;
+            matching = true;
+            dropping = false;
+            waiting = false;
+            gameStateTimer = millis();
+          }
+        }
+
+        // Reset player click
+        currentGem = null;
+      }
     }
   }
 }
