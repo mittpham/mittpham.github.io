@@ -57,13 +57,12 @@ function preload() {
   redGemImage = loadImage("redgem.png");
 }
 
-// Set up grid
+// Set up grid and remove any initial matches
 function setup() {
   background("black");
   createCanvas(ROWS * CELL_SIZE, COLUMNS * CELL_SIZE);
   grid = generateGrid(ROWS, COLUMNS);
-  matchGems();
-  refillGems();
+  checkMatches();
 }
 
 // Show grid
@@ -107,9 +106,10 @@ function dropGems() {
     if (dropOneGem()) {
       gameStateTimer = millis();
     }
-    // If they didn't move then refill the gems and reset states
+    // If they didn't move then refill the gems, check for new matches, and reset states
     else {
       refillGems();
+      checkMatches();
       dropping = false;
       waiting = true;
     }
@@ -132,6 +132,19 @@ function dropOneGem() {
   }
 
   return movingGems;  
+}
+
+// Check for matches and activate highlighting and removing process if matches
+function checkMatches() {
+  let newGemGrid = matchGems();
+
+  if (gemMatches) {
+    matchingGems = newGemGrid;
+    matching = true;
+    dropping = false;
+    waiting = false;
+    gameStateTimer = millis();
+  }
 }
 
 // Generate a random grid array
@@ -280,16 +293,7 @@ function mousePressed() {
           grid[currentGem.y][currentGem.x] = grid[gemY][gemX];
           grid[gemY][gemX] = temporaryGem;
 
-          let newGemGrid = matchGems();
-
-          // Activate matches
-          if (gemMatches) {
-            matchingGems = newGemGrid;
-            matching = true;
-            dropping = false;
-            waiting = false;
-            gameStateTimer = millis();
-          }
+          checkMatches();
         }
 
         // Reset player click
