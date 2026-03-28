@@ -145,6 +145,7 @@ function checkMatches() {
     dropping = false;
     waiting = false;
     gameStateTimer = millis();
+    return true;
   }
   // swap back
   else {
