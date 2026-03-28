@@ -69,6 +69,12 @@ function setup() {
     grid = generateGrid(ROWS, COLUMNS);
     initialMatches = checkMatches();
   }
+
+  // Clear states and reset matches
+  dropping = false;
+  matching = false;
+  waiting = true;
+  matchingGems = [];
 }
 
 // Show grid
