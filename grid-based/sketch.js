@@ -62,7 +62,13 @@ function setup() {
   background("black");
   createCanvas(ROWS * CELL_SIZE, COLUMNS * CELL_SIZE);
   grid = generateGrid(ROWS, COLUMNS);
-  checkMatches();
+
+  // Generate boards until there are no matches
+  let initialMatches = checkMatches();
+  while (initialMatches) {
+    grid = generateGrid(ROWS, COLUMNS);
+    initialMatches = checkMatches();
+  }
 }
 
 // Show grid
