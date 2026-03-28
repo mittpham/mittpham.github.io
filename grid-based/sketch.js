@@ -138,12 +138,17 @@ function dropOneGem() {
 function checkMatches() {
   let newGemGrid = matchGems();
 
+  // begin highlighting the matches
   if (gemMatches) {
     matchingGems = newGemGrid;
     matching = true;
     dropping = false;
     waiting = false;
     gameStateTimer = millis();
+  }
+  // swap back
+  else {
+    return false;
   }
 }
 
@@ -293,7 +298,13 @@ function mousePressed() {
           grid[currentGem.y][currentGem.x] = grid[gemY][gemX];
           grid[gemY][gemX] = temporaryGem;
 
-          checkMatches();
+          // Test for matches and swap back if none
+          let validMatch = checkMatches();
+          if (!validMatch) {
+            let temporaryGem = grid[currentGem.y][currentGem.x];
+            grid[currentGem.y][currentGem.x] = grid[gemY][gemX];
+            grid[gemY][gemX] = temporaryGem;
+          }
         }
 
         // Reset player click
