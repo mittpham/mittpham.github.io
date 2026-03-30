@@ -15,6 +15,7 @@ matching = false;
 // Timer variables and constants
 const MATCHING_GEMS_DELAY = 500;
 const DROPPING_GEMS_DELAY = 200;
+const SHUFFLE_GRID_TIME = 20000;
 
 let gameStateTimer = 0;
 
@@ -47,6 +48,11 @@ let redGemImage;
 // Track the player clicks and any matches
 let currentGem = null;
 let gemMatches = false;
+
+// Shuffle prompt constants
+const SHUFFLE_PROMPT_X = 400;
+const SHUFFLE_PROMPT_Y = 300;
+const SHUFFLE_PROMPT_TEXT_SIZE = 30;
 
 // Load gem images
 function preload() {
@@ -283,6 +289,18 @@ function refillGems() {
         grid[y][x] = random(gems);
       }
     }
+  }
+}
+
+// shuffle grid if idle for too long
+function shuffleGrid() {
+  if (mills() > SHUFFLE_GRID_TIME + gameStateTimer) {
+    fill("white");
+    rect(shuffleBoxX, shuffleBoxY, width / 2, height / 2);
+    textAlign(CENTER, CENTER);
+    fill("black");
+    textSize(SHUFFLE_PROMPT_TEXT_SIZE);
+    text("Press R to shuffle the board for -1000 points", width / 2, height / 2);
   }
 }
 
