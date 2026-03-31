@@ -15,7 +15,7 @@ matching = false;
 // Timer variables and constants
 const MATCHING_GEMS_DELAY = 500;
 const DROPPING_GEMS_DELAY = 200;
-const SHUFFLE_GRID_TIME = 20000;
+const SHUFFLE_GRID_TIME = 10;
 
 let gameStateTimer = 0;
 
@@ -28,7 +28,7 @@ const EMPTY_CELL = -1;
 const UNHIGHLIGHTED_CELL = 1;
 const HIGHLIGHTED_CELL = 4;
 
-let grid;
+let gemGrid;
 
 // Gems variables and constants
 const BLUE_GEM = 0;
@@ -50,12 +50,15 @@ let currentGem = null;
 let gemMatches = false;
 
 // Shuffle prompt constants and variables
-const SHUFFLE_PROMPT_X = 1000;
-const SHUFFLE_PROMPT_Y = 300;
+const SHUFFLE_PROMPT_X = 700;
+const SHUFFLE_PROMPT_Y = 200;
 const SHUFFLE_PROMPT_TEXT_SIZE = 30;
 
 let promptShowing = false;
 let promptShown = false;
+
+// Point system variables
+let points = 0;
 
 // Load gem images
 function preload() {
@@ -70,12 +73,12 @@ function preload() {
 function setup() {
   background("black");
   createCanvas(ROWS * CELL_SIZE, COLUMNS * CELL_SIZE);
-  grid = generateGrid(ROWS, COLUMNS);
+  gemGrid = generateGrid(ROWS, COLUMNS);
 
   // Generate boards until there are no matches
   let initialMatches = checkMatches();
   while (initialMatches) {
-    grid = generateGrid(ROWS, COLUMNS);
+    gemGrid = generateGrid(ROWS, COLUMNS);
     initialMatches = checkMatches();
   }
 
@@ -108,7 +111,7 @@ function removeMatches() {
     for (let y = 0; y < ROWS; y ++) {
       for (let x = 0; x < COLUMNS; x ++) {
         if (matchingGems[y][x] === true) {
-          grid[y][x] = EMPTY_CELL;
+          gemGrid[y][x] = EMPTY_CELL;
         }
       }
     }
@@ -147,9 +150,9 @@ function dropOneGem() {
   // Check all cells and find an empty cell, look above the empty cell for a gem and swap them
   for (let x = 0; x < COLUMNS; x ++) {
     for (let y = ROWS - 1; y > 0; y --) {
-      if (grid[y][x] === EMPTY_CELL && grid[y - 1][x] !== EMPTY_CELL) {
-        grid[y][x] = grid[y - 1][x];
-        grid[y - 1][x] = EMPTY_CELL;
+      if (gemGrid[y][x] === EMPTY_CELL && gemGrid[y - 1][x] !== EMPTY_CELL) {
+        gemGrid[y][x] = gemGrid[y - 1][x];
+        gemGrid[y - 1][x] = EMPTY_CELL;
         movingGems = true;
       }
     }
@@ -179,15 +182,15 @@ function checkMatches() {
 
 // Generate a random grid array
 function generateGrid(ROWS, COLUMNS) {
-  let grid = [];
+  let gemGrid = [];
 
   for (let y = 0; y < ROWS; y ++) {
-    grid.push([]);
+    gemGrid.push([]);
     for (let x = 0; x < COLUMNS; x ++) {
-      grid[y].push(random(gems));
+      gemGrid[y].push(random(gems));
     }
   }
-  return grid;
+  return gemGrid;
 }
 
 // Display the generated array
@@ -218,23 +221,23 @@ function displayGrid() {
       }
 
       // Load image for each respective number
-      if (grid[y][x] !== EMPTY_CELL) {
-        if (grid[y][x] === BLUE_GEM) {
+      if (gemGrid[y][x] !== EMPTY_CELL) {
+        if (gemGrid[y][x] === BLUE_GEM) {
           image(blueGemImage, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
         }
-        else if (grid[y][x] === GREEN_GEM) {
+        else if (gemGrid[y][x] === GREEN_GEM) {
           image(greenGemImage, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
         }
-        else if (grid[y][x] === ORANGE_GEM) {
+        else if (gemGrid[y][x] === ORANGE_GEM) {
           image(orangeGemImage, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
         }
-        else if (grid[y][x] === PURPLE_GEM) {
+        else if (gemGrid[y][x] === PURPLE_GEM) {
           image(purpleGemImage, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
         }
-        else if (grid[y][x] === RED_GEM) {
+        else if (gemGrid[y][x] === RED_GEM) {
           image(redGemImage, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
         }
-        else if (grid[y][x] === EMPTY_CELL) {
+        else if (gemGrid[y][x] === EMPTY_CELL) {
           square(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE);
         }
       }
@@ -260,25 +263,27 @@ function matchGems() {
   for (let y = 0; y < ROWS; y ++) {
     for (let x = 0; x < COLUMNS; x ++) {
 
-      let gemType = grid[y][x];
+      let gemType = gemGrid[y][x];
 
       // Check for horizontal matches
       if (x - 1 >= 0 && x + 1 < COLUMNS) {
-        if (grid[y][x - 1] === gemType && grid[y][x + 1] === gemType) {
+        if (gemGrid[y][x - 1] === gemType && gemGrid[y][x + 1] === gemType) {
           matchGrid[y][x] = true;
           matchGrid[y][x - 1] = true;
           matchGrid[y][x + 1] = true;
           gemMatches = true;
+          points += 100;
         }
       }
 
       // Check for vertical matches
       if (y - 1 >= 0 && y + 1 < ROWS) {
-        if (grid[y - 1][x] === gemType && grid[y + 1][x] === gemType) {
+        if (gemGrid[y - 1][x] === gemType && gemGrid[y + 1][x] === gemType) {
           matchGrid[y][x] = true;
           matchGrid[y - 1][x] = true;
           matchGrid[y + 1][x] = true;
           gemMatches = true;
+          points += 100;
         }
       }
     }
@@ -291,8 +296,8 @@ function matchGems() {
 function refillGems() {
   for (let y = 0; y < ROWS; y ++) {
     for (let x = 0; x < COLUMNS; x ++) {
-      if (grid[y][x] === EMPTY_CELL) {
-        grid[y][x] = random(gems);
+      if (gemGrid[y][x] === EMPTY_CELL) {
+        gemGrid[y][x] = random(gems);
       }
     }
   }
@@ -304,11 +309,13 @@ function shuffleGrid() {
     promptShowing = true;
     fill("white");
     rectMode(CENTER);
-    rect(SHUFFLE_PROMPT_X, SHUFFLE_PROMPT_Y, width / 2, height / 2);
+    rect(width / 2, height / 2, SHUFFLE_PROMPT_X, SHUFFLE_PROMPT_Y);
     rectMode(CORNER);
     textAlign(CENTER, CENTER);
     fill("black");
     textSize(SHUFFLE_PROMPT_TEXT_SIZE);
+    strokeWeight(1);
+    noStroke();
     text(`Press R to shuffle the board for -1000 points
       Press C to ignore`, width / 2, height / 2);
   }
@@ -338,16 +345,16 @@ function mousePressed() {
       else {
         // Swap the two gems
         if (Math.abs(currentGem.x - gemX) + Math.abs(currentGem.y - gemY) === 1) {
-          let temporaryGem = grid[currentGem.y][currentGem.x];
-          grid[currentGem.y][currentGem.x] = grid[gemY][gemX];
-          grid[gemY][gemX] = temporaryGem;
+          let temporaryGem = gemGrid[currentGem.y][currentGem.x];
+          gemGrid[currentGem.y][currentGem.x] = gemGrid[gemY][gemX];
+          gemGrid[gemY][gemX] = temporaryGem;
 
           // Test for matches and swap back if none
           let validMatch = checkMatches();
           if (!validMatch) {
-            let temporaryGem = grid[currentGem.y][currentGem.x];
-            grid[currentGem.y][currentGem.x] = grid[gemY][gemX];
-            grid[gemY][gemX] = temporaryGem;
+            let temporaryGem = gemGrid[currentGem.y][currentGem.x];
+            gemGrid[currentGem.y][currentGem.x] = gemGrid[gemY][gemX];
+            gemGrid[gemY][gemX] = temporaryGem;
           }
         }
 
@@ -364,12 +371,12 @@ function keyPressed() {
 
     // Shuffle grid for -1000 points
     if (key === "r") {
-      grid = generateGrid(ROWS, COLUMNS);
+      gemGrid = generateGrid(ROWS, COLUMNS);
 
       // Generate boards until there are no matches
       let initialMatches = checkMatches();
       while (initialMatches) {
-        grid = generateGrid(ROWS, COLUMNS);
+        gemGrid = generateGrid(ROWS, COLUMNS);
         initialMatches = checkMatches();
       }
 
