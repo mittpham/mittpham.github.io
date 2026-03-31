@@ -49,10 +49,13 @@ let redGemImage;
 let currentGem = null;
 let gemMatches = false;
 
-// Shuffle prompt constants
-const SHUFFLE_PROMPT_X = 400;
+// Shuffle prompt constants and variables
+const SHUFFLE_PROMPT_X = 1000;
 const SHUFFLE_PROMPT_Y = 300;
 const SHUFFLE_PROMPT_TEXT_SIZE = 30;
+
+let promptShowing = false;
+let promptShown = false;
 
 // Load gem images
 function preload() {
@@ -93,6 +96,9 @@ function draw() {
   }
   else if (dropping) {
     dropGems();
+  }
+  else if (waiting) {
+    shuffleGrid();
   }
 }
 
@@ -292,15 +298,19 @@ function refillGems() {
   }
 }
 
-// shuffle grid if idle for too long
+// show the shuffle grid prompt if idle for too long
 function shuffleGrid() {
-  if (mills() > SHUFFLE_GRID_TIME + gameStateTimer) {
+  if (millis() > SHUFFLE_GRID_TIME + gameStateTimer && !promptShown) {
+    promptShowing = true;
     fill("white");
-    rect(shuffleBoxX, shuffleBoxY, width / 2, height / 2);
+    rectMode(CENTER);
+    rect(SHUFFLE_PROMPT_X, SHUFFLE_PROMPT_Y, width / 2, height / 2);
+    rectMode(CORNER);
     textAlign(CENTER, CENTER);
     fill("black");
     textSize(SHUFFLE_PROMPT_TEXT_SIZE);
-    text("Press R to shuffle the board for -1000 points", width / 2, height / 2);
+    text(`Press R to shuffle the board for -1000 points
+      Press C to ignore`, width / 2, height / 2);
   }
 }
 
@@ -308,7 +318,10 @@ function shuffleGrid() {
 function mousePressed() {
 
   // Make sure that the game currently isn't moving or matching gems
-  if (waiting) {
+  if (waiting && !promptShowing) {
+    // Reset idle time for shuffle prompt
+    gameStateTimer = millis();
+
     let gemX = Math.floor(mouseX / CELL_SIZE);
     let gemY = Math.floor(mouseY / CELL_SIZE);
 
@@ -343,4 +356,38 @@ function mousePressed() {
       }
     }
   }
+}
+
+// Control the prompt screen / Shuffle the grid
+function keyPressed() {
+  if (waiting) {
+
+    // Shuffle grid for -1000 points
+    if (key === "r") {
+      grid = generateGrid(ROWS, COLUMNS);
+
+      // Generate boards until there are no matches
+      let initialMatches = checkMatches();
+      while (initialMatches) {
+        grid = generateGrid(ROWS, COLUMNS);
+        initialMatches = checkMatches();
+      }
+
+      // Clear states and reset matches
+      dropping = false;
+      matching = false;
+      waiting = true;
+      matchingGems = [];
+      gameStateTimer = millis();
+      promptShowing = false;
+      promptShown = true;
+    }
+
+    // Ignore the prompt screen
+    else if (key === "c") {
+      promptShowing = false;
+      promptShown = true;
+    }
+  }
+
 }
