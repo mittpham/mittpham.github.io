@@ -15,7 +15,7 @@ matching = false;
 // Timer variables and constants
 const MATCHING_GEMS_DELAY = 500;
 const DROPPING_GEMS_DELAY = 200;
-const SHUFFLE_GRID_TIME = 10;
+const SHUFFLE_GRID_TIME = 20000;
 
 let gameStateTimer = 0;
 
@@ -27,6 +27,7 @@ const HALF_OPACITY = 127;
 const EMPTY_CELL = -1;
 const UNHIGHLIGHTED_CELL = 1;
 const HIGHLIGHTED_CELL = 4;
+const BORDER_X = 200;
 
 let gemGrid;
 
@@ -59,6 +60,7 @@ let promptShown = false;
 
 // Point system variables
 let points = 0;
+let currentPoints = 0;
 
 // Load gem images
 function preload() {
@@ -71,8 +73,8 @@ function preload() {
 
 // Set up grid and remove any initial matches
 function setup() {
-  background("black");
-  createCanvas(ROWS * CELL_SIZE, COLUMNS * CELL_SIZE);
+  background("gray");
+  createCanvas(ROWS * CELL_SIZE + BORDER_X, COLUMNS * CELL_SIZE);
   gemGrid = generateGrid(ROWS, COLUMNS);
 
   // Generate boards until there are no matches
@@ -87,6 +89,7 @@ function setup() {
   matching = false;
   waiting = true;
   matchingGems = [];
+  points = 0;
 }
 
 // Show grid
@@ -373,6 +376,9 @@ function keyPressed() {
     if (key === "r") {
       gemGrid = generateGrid(ROWS, COLUMNS);
 
+      // Track the points
+      currentPoints = points;
+
       // Generate boards until there are no matches
       let initialMatches = checkMatches();
       while (initialMatches) {
@@ -388,6 +394,8 @@ function keyPressed() {
       gameStateTimer = millis();
       promptShowing = false;
       promptShown = true;
+      currentPoints -= 1000;
+      points = currentPoints;
     }
 
     // Ignore the prompt screen
