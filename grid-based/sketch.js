@@ -65,13 +65,25 @@ const POINTS_MARGIN = 10;
 let points = 0;
 let currentPoints = 0;
 
-// Load gem images
+// Sounds
+let dropSound;
+let swapSound;
+let matchSound;
+
+// Load gem images and sounds
 function preload() {
+
+  // Images
   blueGemImage = loadImage("bluegem.png");
   greenGemImage = loadImage("greengem.png");
   orangeGemImage = loadImage("orangegem.png");
   purpleGemImage = loadImage("purplegem.png");
   redGemImage = loadImage("redgem.png");
+
+  // Sounds
+  dropSound = loadSound("drop.mp3");
+  swapSound = loadSound("switch.mp3");
+  matchSound = loadSound("shine.mp3");
 }
 
 // Set up grid and remove any initial matches
@@ -118,6 +130,7 @@ function removeMatches() {
     for (let y = 0; y < ROWS; y ++) {
       for (let x = 0; x < COLUMNS; x ++) {
         if (matchingGems[y][x] === true) {
+          matchSound.play();
           gemGrid[y][x] = EMPTY_CELL;
         }
       }
@@ -161,6 +174,9 @@ function dropOneGem() {
         gemGrid[y][x] = gemGrid[y - 1][x];
         gemGrid[y - 1][x] = EMPTY_CELL;
         movingGems = true;
+
+        // Play drop sound
+        dropSound.play();
       }
     }
   }
@@ -373,6 +389,9 @@ function mousePressed() {
             gemGrid[currentGem.y][currentGem.x] = gemGrid[gemY][gemX];
             gemGrid[gemY][gemX] = temporaryGem;
           }
+
+          // Play swapping sound
+          swapSound.play();
         }
 
         // Reset player click
