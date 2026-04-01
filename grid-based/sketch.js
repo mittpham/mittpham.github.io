@@ -41,7 +41,15 @@ const ORANGE_GEM = 2;
 const PURPLE_GEM = 3;
 const RED_GEM = 4;
 
-let gems = [BLUE_GEM, GREEN_GEM, ORANGE_GEM, PURPLE_GEM, RED_GEM];
+let gems = {
+  x: ROWS * CELL_SIZE,
+  y: COLUMNS * CELL_SIZE,
+  motionX,
+  motionY,
+  type: random(gemTypes)
+};
+
+let gemTypes = [BLUE_GEM, GREEN_GEM, ORANGE_GEM, PURPLE_GEM, RED_GEM];
 let matchingGems = [];
 let blueGemImage;
 let greenGemImage;
