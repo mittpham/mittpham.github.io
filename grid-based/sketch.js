@@ -3,9 +3,12 @@
 // March 20 2026
 // 
 // Extra for Experts:
-// who knows
+// Trying out functions: lerp(), tint(), Math.floor(), millis()
+// Incorporating a timer, delays, and "animation"
+
 // https://p5js.org/examples/imported-media-image-transparency/ - image opacity
 // https://editor.p5js.org/MarcoGaLo/sketches/2WSdSF7nx - candy crush reference
+// https://editor.p5js.org/clement.zheng/sketches/t66CpvG7V - lerp()
 
 // Game state variables
 waiting = true; 
