@@ -58,7 +58,10 @@ const SHUFFLE_PROMPT_TEXT_SIZE = 30;
 let promptShowing = false;
 let promptShown = false;
 
-// Point system variables
+// Point system constants and variables
+const POINTS_TEXT_SIZE = 25;
+const POINTS_MARGIN = 10;
+
 let points = 0;
 let currentPoints = 0;
 
@@ -73,7 +76,6 @@ function preload() {
 
 // Set up grid and remove any initial matches
 function setup() {
-  background("gray");
   createCanvas(ROWS * CELL_SIZE + BORDER_X, COLUMNS * CELL_SIZE);
   gemGrid = generateGrid(ROWS, COLUMNS);
 
@@ -94,7 +96,9 @@ function setup() {
 
 // Show grid
 function draw() {
+  background("black");
   displayGrid();
+  displayPoints();
 
   // Control game states
   if (matching) {
@@ -248,6 +252,15 @@ function displayGrid() {
   }
 }
 
+// Display how the player's points on the right side of the screen
+function displayPoints() {
+  textAlign(LEFT, CENTER);
+  fill("white");
+  textSize(POINTS_TEXT_SIZE);
+  noStroke();
+  text(`Points: ${points}`, ROWS * CELL_SIZE + POINTS_MARGIN, CELL_SIZE);
+}
+
 // Check if there are three matching gems
 function matchGems() {
 
@@ -266,6 +279,7 @@ function matchGems() {
   for (let y = 0; y < ROWS; y ++) {
     for (let x = 0; x < COLUMNS; x ++) {
 
+      // Save the type of the current gem
       let gemType = gemGrid[y][x];
 
       // Check for horizontal matches
@@ -317,7 +331,6 @@ function shuffleGrid() {
     textAlign(CENTER, CENTER);
     fill("black");
     textSize(SHUFFLE_PROMPT_TEXT_SIZE);
-    strokeWeight(1);
     noStroke();
     text(`Press R to shuffle the board for -1000 points
       Press C to ignore`, width / 2, height / 2);
@@ -329,6 +342,7 @@ function mousePressed() {
 
   // Make sure that the game currently isn't moving or matching gems
   if (waiting && !promptShowing) {
+
     // Reset idle time for shuffle prompt
     gameStateTimer = millis();
 
@@ -404,5 +418,4 @@ function keyPressed() {
       promptShown = true;
     }
   }
-
 }
