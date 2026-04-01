@@ -69,6 +69,7 @@ let currentPoints = 0;
 let dropSound;
 let swapSound;
 let matchSound;
+let blingSound;
 
 // Load gem images and sounds
 function preload() {
@@ -84,6 +85,7 @@ function preload() {
   dropSound = loadSound("drop.mp3");
   swapSound = loadSound("switch.mp3");
   matchSound = loadSound("shine.mp3");
+  blingSound = loadSound("bling.mp3");
 }
 
 // Set up grid and remove any initial matches
@@ -130,8 +132,10 @@ function removeMatches() {
     for (let y = 0; y < ROWS; y ++) {
       for (let x = 0; x < COLUMNS; x ++) {
         if (matchingGems[y][x] === true) {
-          matchSound.play();
           gemGrid[y][x] = EMPTY_CELL;
+
+          // Play highlight sound
+          matchSound.play();
         }
       }
     }
@@ -418,6 +422,9 @@ function keyPressed() {
         gemGrid = generateGrid(ROWS, COLUMNS);
         initialMatches = checkMatches();
       }
+
+      // Play bling sound
+      blingSound.play();
 
       // Clear states and reset matches
       dropping = false;
