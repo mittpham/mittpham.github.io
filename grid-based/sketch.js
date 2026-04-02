@@ -14,6 +14,7 @@
 waiting = true; 
 dropping = false;
 matching = false;
+gameOver = false;
 
 // Timer variables and constants
 const MATCHING_GEMS_DELAY = 500;
@@ -73,6 +74,11 @@ const GAME_TIMER = 120000;
 const TIMER_TEXT_SIZE = 25;
 const TIMER_MARGIN = 10;
 
+// Game over constants
+const GAME_OVER_SCREEN_X = 800;
+const GAME_OVER_SCREEN_Y = 400;
+const GAME_OVER_TEXT_SIZE = 40;
+
 let gameTimer = 0;
 
 // Sounds
@@ -111,6 +117,7 @@ function setup() {
   }
 
   // Clear states, reset matches, reset points, start game timer
+  gameOver = false;
   dropping = false;
   matching = false;
   waiting = true;
@@ -135,6 +142,9 @@ function draw() {
   }
   else if (waiting) {
     shuffleGrid();
+  }
+  else if (gameOver) {
+    displayGameOver();
   }
 }
 
@@ -309,7 +319,7 @@ function displayPoints() {
 function displayTimer() {
 
   // Calculate remaining time
-  let remainingTime = Math.round((GAME_TIMER - millis() - gameTimer) / 1000);
+  let remainingTime = Math.round((GAME_TIMER - (millis() - gameTimer)) / 1000);
   if (remainingTime < 0) {
     remainingTime = 0;
   }
@@ -319,6 +329,33 @@ function displayTimer() {
   textSize(POINTS_TEXT_SIZE);
   noStroke();
   text(`Time: ${remainingTime}`, ROWS * CELL_SIZE + TIMER_MARGIN, CELL_SIZE * 2);
+
+  // Check if player has lost
+  gameOverTrigger(remainingTime);
+}
+
+// Display game over
+function displayGameOver() {
+  fill("white");
+  rectMode(CENTER);
+  rect(width / 2, height / 2, GAME_OVER_SCREEN_X, GAME_OVER_SCREEN_Y);
+  rectMode(CORNER);
+  textAlign(CENTER, CENTER);
+  fill("black");
+  textSize(GAME_OVER_TEXT_SIZE);
+  noStroke();
+  text(`GAME OVER
+    CLICK TO PLAY AGAIN`, width / 2, height / 2);
+}
+
+// Trigger if time runs out and point quota is not met
+function gameOverTrigger(time) {
+  if (time === 0 && points < 10000) {
+    gameOver = true;
+    waiting = false;
+    dropping = false;
+    matching = false;
+  }
 }
 
 // Check if there are three matching gems
@@ -448,6 +485,33 @@ function mousePressed() {
         // Reset player click
         currentGem = null;
       }
+    }
+  }
+
+  // Click on the box to restart
+  else if (gameOver) {
+
+    // Ensure click is within the box
+    if (mouseX > width / 2 - GAME_OVER_SCREEN_X / 2 && mouseX < width / 2 + GAME_OVER_SCREEN_X / 2 && mouseY > height / 2 - GAME_OVER_SCREEN_Y / 2 && mouseY < height / 2 + GAME_OVER_SCREEN_Y / 2) {
+
+      // Reset the game
+      gemGrid = generateGrid(ROWS, COLUMNS);
+
+      // Generate boards until there are no matches
+      let initialMatches = checkMatches();
+      while (initialMatches) {
+        gemGrid = generateGrid(ROWS, COLUMNS);
+        initialMatches = checkMatches();
+      }
+
+      // Clear states, reset matches, reset points, start game timer
+      gameOver = false;
+      dropping = false;
+      matching = false;
+      waiting = true;
+      matchingGems = [];
+      points = 0;
+      gameTimer = millis();
     }
   }
 }
