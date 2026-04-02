@@ -15,6 +15,7 @@ waiting = true;
 dropping = false;
 matching = false;
 gameOver = false;
+gameWon = false;
 
 // Timer variables and constants
 const MATCHING_GEMS_DELAY = 500;
@@ -74,6 +75,8 @@ const GAME_TIMER = 120000;
 const TIMER_TEXT_SIZE = 25;
 const TIMER_MARGIN = 10;
 
+let remainingTime;
+
 // Game over constants
 const GAME_OVER_SCREEN_X = 800;
 const GAME_OVER_SCREEN_Y = 400;
@@ -117,6 +120,7 @@ function setup() {
   }
 
   // Clear states, reset matches, reset points, start game timer
+  gameWon = false;
   gameOver = false;
   dropping = false;
   matching = false;
@@ -145,6 +149,9 @@ function draw() {
   }
   else if (gameOver) {
     displayGameOver();
+  }
+  else if (gameWon) {
+    displayGameWon();
   }
 }
 
@@ -319,19 +326,20 @@ function displayPoints() {
 function displayTimer() {
 
   // Calculate remaining time
-  let remainingTime = Math.round((GAME_TIMER - (millis() - gameTimer)) / 1000);
+  remainingTime = Math.round((GAME_TIMER - (millis() - gameTimer)) / 1000);
   if (remainingTime < 0) {
     remainingTime = 0;
   }
 
+  // Draw the timer
   textAlign(LEFT, CENTER);
   fill("white");
   textSize(POINTS_TEXT_SIZE);
   noStroke();
   text(`Time: ${remainingTime}`, ROWS * CELL_SIZE + TIMER_MARGIN, CELL_SIZE * 2);
 
-  // Check if player has lost
-  gameOverTrigger(remainingTime);
+  // Check if player has lost or won
+  gameEndTrigger();
 }
 
 // Display game over
@@ -348,10 +356,35 @@ function displayGameOver() {
     CLICK TO PLAY AGAIN`, width / 2, height / 2);
 }
 
-// Trigger if time runs out and point quota is not met
-function gameOverTrigger(time) {
-  if (time === 0 && points < 10000) {
+// Display game won
+function displayGameWon() {
+  fill("white");
+  rectMode(CENTER);
+  rect(width / 2, height / 2, GAME_OVER_SCREEN_X, GAME_OVER_SCREEN_Y);
+  rectMode(CORNER);
+  textAlign(CENTER, CENTER);
+  fill("black");
+  textSize(GAME_OVER_TEXT_SIZE);
+  noStroke();
+  text(`GAME WON
+    YOU HAD ${remainingTime} TIME LEFT
+    CLICK TO PLAY AGAIN`, width / 2, height / 2);
+}
+
+// Trigger if time runs out
+function gameEndTrigger() {
+
+  // Trigger if game over
+  if (remainingTime === 0 && points < 10000) {
     gameOver = true;
+    waiting = false;
+    dropping = false;
+    matching = false;
+  }
+
+  // Trigger win screen
+  else if (points >= 10000) {
+    gameWon = true;
     waiting = false;
     dropping = false;
     matching = false;
@@ -489,7 +522,7 @@ function mousePressed() {
   }
 
   // Click on the box to restart
-  else if (gameOver) {
+  else if (gameOver || gameWon) {
 
     // Ensure click is within the box
     if (mouseX > width / 2 - GAME_OVER_SCREEN_X / 2 && mouseX < width / 2 + GAME_OVER_SCREEN_X / 2 && mouseY > height / 2 - GAME_OVER_SCREEN_Y / 2 && mouseY < height / 2 + GAME_OVER_SCREEN_Y / 2) {
@@ -505,6 +538,7 @@ function mousePressed() {
       }
 
       // Clear states, reset matches, reset points, start game timer
+      gameWon = false;
       gameOver = false;
       dropping = false;
       matching = false;
