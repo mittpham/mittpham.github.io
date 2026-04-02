@@ -41,14 +41,6 @@ const ORANGE_GEM = 2;
 const PURPLE_GEM = 3;
 const RED_GEM = 4;
 
-let gems = {
-  x: ROWS * CELL_SIZE,
-  y: COLUMNS * CELL_SIZE,
-  motionX,
-  motionY,
-  type: random(gemTypes)
-};
-
 let gemTypes = [BLUE_GEM, GREEN_GEM, ORANGE_GEM, PURPLE_GEM, RED_GEM];
 let matchingGems = [];
 let blueGemImage;
@@ -225,7 +217,14 @@ function generateGrid(ROWS, COLUMNS) {
   for (let y = 0; y < ROWS; y ++) {
     gemGrid.push([]);
     for (let x = 0; x < COLUMNS; x ++) {
-      gemGrid[y].push(random(gems));
+
+      let gems = {
+        motionX: x * CELL_SIZE,
+        motionY: y * CELL_SIZE,
+        type: random(gemTypes)
+      };
+
+      gemGrid[y].push(gems);
     }
   }
   return gemGrid;
@@ -251,31 +250,36 @@ function displayGrid() {
       rect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
 
       // Reduce opacity of current gem if clicked
-      if (currentGem !== null && currentGem.x === x && currentGem.y === y) {
+      if (currentGem !== null && currentGem.x === x && currentGem.y   === y) {
         tint(255, HALF_OPACITY);
       }
       else {
         noTint();
       }
 
-      // Load image for each respective number
+      // Load image for each gem
       if (gemGrid[y][x] !== EMPTY_CELL) {
-        if (gemGrid[y][x] === BLUE_GEM) {
-          image(blueGemImage, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+
+        // Move the gems with lerp
+        gemGrid[y][x].motionX = lerp(gemGrid[y][x].motionX, x * CELL_SIZE, 0.2);
+        gemGrid[y][x].motionY = lerp(gemGrid[y][x].motionY, y * CELL_SIZE, 0.2);
+
+        if (gemGrid[y][x].type === BLUE_GEM) {
+          image(blueGemImage, gemGrid[y][x].motionX, gemGrid[y][x].motionY, CELL_SIZE, CELL_SIZE);
         }
-        else if (gemGrid[y][x] === GREEN_GEM) {
-          image(greenGemImage, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+        else if (gemGrid[y][x].type === GREEN_GEM) {
+          image(greenGemImage, gemGrid[y][x].motionX, gemGrid[y][x].motionY, CELL_SIZE, CELL_SIZE);
         }
-        else if (gemGrid[y][x] === ORANGE_GEM) {
-          image(orangeGemImage, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+        else if (gemGrid[y][x].type === ORANGE_GEM) {
+          image(orangeGemImage, gemGrid[y][x].motionX, gemGrid[y][x].motionY, CELL_SIZE, CELL_SIZE);  
         }
-        else if (gemGrid[y][x] === PURPLE_GEM) {
-          image(purpleGemImage, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+        else if (gemGrid[y][x].type === PURPLE_GEM) {
+          image(purpleGemImage, gemGrid[y][x].motionX, gemGrid[y][x].motionY, CELL_SIZE, CELL_SIZE);
         }
-        else if (gemGrid[y][x] === RED_GEM) {
-          image(redGemImage, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+        else if (gemGrid[y][x].type === RED_GEM) {
+          image(redGemImage, gemGrid[y][x].motionX, gemGrid[y][x].motionY, CELL_SIZE, CELL_SIZE);
         }
-        else if (gemGrid[y][x] === EMPTY_CELL) {
+        else {
           square(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE);
         }
       }
@@ -311,11 +315,11 @@ function matchGems() {
     for (let x = 0; x < COLUMNS; x ++) {
 
       // Save the type of the current gem
-      let gemType = gemGrid[y][x];
+      let gemType = gemGrid[y][x].type;
 
       // Check for horizontal matches
       if (x - 1 >= 0 && x + 1 < COLUMNS) {
-        if (gemGrid[y][x - 1] === gemType && gemGrid[y][x + 1] === gemType) {
+        if (gemGrid[y][x - 1].type === gemType && gemGrid[y][x + 1].type === gemType) {
           matchGrid[y][x] = true;
           matchGrid[y][x - 1] = true;
           matchGrid[y][x + 1] = true;
@@ -326,7 +330,7 @@ function matchGems() {
 
       // Check for vertical matches
       if (y - 1 >= 0 && y + 1 < ROWS) {
-        if (gemGrid[y - 1][x] === gemType && gemGrid[y + 1][x] === gemType) {
+        if (gemGrid[y - 1][x].type === gemType && gemGrid[y + 1][x].type === gemType) {
           matchGrid[y][x] = true;
           matchGrid[y - 1][x] = true;
           matchGrid[y + 1][x] = true;
@@ -345,7 +349,14 @@ function refillGems() {
   for (let y = 0; y < ROWS; y ++) {
     for (let x = 0; x < COLUMNS; x ++) {
       if (gemGrid[y][x] === EMPTY_CELL) {
-        gemGrid[y][x] = random(gems);
+
+        let gems = {
+          motionX: x * CELL_SIZE,
+          motionY: y * CELL_SIZE,
+          type: random(gemTypes)
+        };
+
+        gemGrid[y][x] = gems;
       }
     }
   }
