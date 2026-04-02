@@ -68,6 +68,13 @@ const POINTS_MARGIN = 10;
 let points = 0;
 let currentPoints = 0;
 
+// Game timer constants and variables
+const GAME_TIMER = 120000;
+const TIMER_TEXT_SIZE = 25;
+const TIMER_MARGIN = 10;
+
+let gameTimer = 0;
+
 // Sounds
 let dropSound;
 let swapSound;
@@ -103,12 +110,13 @@ function setup() {
     initialMatches = checkMatches();
   }
 
-  // Clear states and reset matches
+  // Clear states, reset matches, reset points, start game timer
   dropping = false;
   matching = false;
   waiting = true;
   matchingGems = [];
   points = 0;
+  gameTimer = millis();
 }
 
 // Show grid
@@ -116,6 +124,7 @@ function draw() {
   background("black");
   displayGrid();
   displayPoints();
+  displayTimer();
 
   // Control game states
   if (matching) {
@@ -294,6 +303,22 @@ function displayPoints() {
   textSize(POINTS_TEXT_SIZE);
   noStroke();
   text(`Points: ${points}`, ROWS * CELL_SIZE + POINTS_MARGIN, CELL_SIZE);
+}
+
+// Display how much time has passed
+function displayTimer() {
+
+  // Calculate remaining time
+  let remainingTime = Math.round((GAME_TIMER - millis() - gameTimer) / 1000);
+  if (remainingTime < 0) {
+    remainingTime = 0;
+  }
+
+  textAlign(LEFT, CENTER);
+  fill("white");
+  textSize(POINTS_TEXT_SIZE);
+  noStroke();
+  text(`Time: ${remainingTime}`, ROWS * CELL_SIZE + TIMER_MARGIN, CELL_SIZE * 2);
 }
 
 // Check if there are three matching gems
