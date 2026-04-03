@@ -187,6 +187,13 @@ function removeMatches() {
     // Increase combo counter
     combo ++;
 
+    // Prevent overlapping sounds
+    comboSoundOne.stop();
+    comboSoundTwo.stop();
+    comboSoundThree.stop();
+    comboSoundFour.stop();
+    comboSoundFive.stop();
+
     // Play the correct combo sound
     if (combo === 1) {
       comboSoundOne.play();
