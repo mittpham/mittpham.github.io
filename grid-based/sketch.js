@@ -167,12 +167,12 @@ function removeMatches() {
       for (let x = 0; x < COLUMNS; x ++) {
         if (matchingGems[y][x] === true) {
           gemGrid[y][x] = EMPTY_CELL;
-
-          // Play highlight sound
-          matchSound.play();
         }
       }
     }
+
+    // Play highlight sound
+    matchSound.play();
 
     // Reset timer and matches, trigger the dropping
     matchingGems = [];
@@ -190,6 +190,9 @@ function dropGems() {
     // If gems did move then reset the timer
     if (dropOneGem()) {
       gameStateTimer = millis();
+
+      // Play drop sound
+      dropSound.play();
     }
     // If they didn't move then refill the gems, check for new matches, and reset states
     else {
@@ -212,9 +215,6 @@ function dropOneGem() {
         gemGrid[y][x] = gemGrid[y - 1][x];
         gemGrid[y - 1][x] = EMPTY_CELL;
         movingGems = true;
-
-        // Play drop sound
-        dropSound.play();
       }
     }
   }
