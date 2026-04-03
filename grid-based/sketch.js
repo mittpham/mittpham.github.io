@@ -3,8 +3,8 @@
 // March 20 2026
 // 
 // Extra for Experts:
-// Trying out functions: lerp(), tint(), Math.floor(), millis()
-// Incorporating a timer, delays, and "animation"
+// Trying out functions: lerp(), tint(), millis(), Math functions
+// Incorporating a timer, delays, animation, and progression systems (combo and stars)
 
 // https://p5js.org/examples/imported-media-image-transparency/ - image opacity
 // https://editor.p5js.org/MarcoGaLo/sketches/2WSdSF7nx - candy crush reference
@@ -66,10 +66,12 @@ let promptShown = false;
 // Point system constants and variables
 const POINTS_TEXT_SIZE = 25;
 const POINTS_MARGIN = 10;
+const COMBO_TEXT_SIZE = 25;
 
 let points = 0;
 let currentPoints = 0;
 let stars = 0;
+let combo = 0;
 
 // Game timer constants and variables
 const GAME_TIMER = 120000;
@@ -132,6 +134,8 @@ function setup() {
   waiting = true;
   matchingGems = [];
   points = 0;
+  stars = 0;
+  combo = 0;
   gameTimer = millis();
 }
 
@@ -141,6 +145,7 @@ function draw() {
   displayGrid();
   displayPoints();
   displayTimer();
+  displayCombo();
 
   // Control game states
   if (matching) {
@@ -174,6 +179,9 @@ function removeMatches() {
     // Play highlight sound
     matchSound.play();
 
+    // Increase combo counter
+    combo ++;
+
     // Reset timer and matches, trigger the dropping
     matchingGems = [];
     matching = false;
@@ -200,6 +208,11 @@ function dropGems() {
       checkMatches();
       dropping = false;
       waiting = true;
+
+      // Reset combo
+      if (!checkMatches()) {
+        combo = 0;
+      }
     }
   }
 }
@@ -327,6 +340,15 @@ function displayPoints() {
   text(`Points: ${points}`, ROWS * CELL_SIZE + POINTS_MARGIN, CELL_SIZE);
 }
 
+// Display how many consecutive matches the player has gotten
+function displayCombo() {
+  textAlign(LEFT, CENTER);
+  fill("white");
+  textSize(COMBO_TEXT_SIZE);
+  noStroke();
+  text(`${combo} COMBO`, ROWS * CELL_SIZE + POINTS_MARGIN, CELL_SIZE * 2);
+}
+
 // Display how much time has passed
 function displayTimer() {
 
@@ -343,7 +365,7 @@ function displayTimer() {
   fill("white");
   textSize(POINTS_TEXT_SIZE);
   noStroke();
-  text(`Time: ${remainingTime}`, ROWS * CELL_SIZE + TIMER_MARGIN, CELL_SIZE * 2);
+  text(`Time: ${remainingTime}`, ROWS * CELL_SIZE + TIMER_MARGIN, CELL_SIZE * 3);
 
   // Check if player has lost or won
   gameEndTrigger();
@@ -408,13 +430,13 @@ function gameEndTrigger() {
       winSound.play();
 
       // Calculate stars
-      if (points >= 15000) {
+      if (points >= 30000) {
         stars = 3;
       }
-      else if (points >= 12500) {
+      else if (points >= 20000) {
         stars = 2;
       }
-      else if (points >= 11000) {
+      else if (points >= 15000) {
         stars = 1;
       }
       else {
@@ -452,7 +474,7 @@ function matchGems() {
           matchGrid[y][x - 1] = true;
           matchGrid[y][x + 1] = true;
           gemMatches = true;
-          points += 100;
+          points += 100 * (combo + 1);
         }
       }
 
@@ -463,7 +485,7 @@ function matchGems() {
           matchGrid[y - 1][x] = true;
           matchGrid[y + 1][x] = true;
           gemMatches = true;
-          points += 100;
+          points += 100 * (combo + 1);
         }
       }
     }
@@ -579,6 +601,7 @@ function mousePressed() {
       matchingGems = [];
       points = 0;
       stars = 0;
+      combo = 0;
       gameTimer = millis();
     }
   }
@@ -615,6 +638,7 @@ function keyPressed() {
       promptShown = true;
       currentPoints -= 1000;
       points = currentPoints;
+      combo = 0;
     }
 
     // Ignore the prompt screen
