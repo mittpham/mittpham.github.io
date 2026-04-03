@@ -452,10 +452,10 @@ function gameEndTrigger() {
       winSound.play();
 
       // Calculate stars
-      if (points >= 30000) {
+      if (points >= 50000) {
         stars = 3;
       }
-      else if (points >= 20000) {
+      else if (points >= 30000) {
         stars = 2;
       }
       else if (points >= 15000) {
