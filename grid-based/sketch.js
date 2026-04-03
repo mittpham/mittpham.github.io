@@ -11,7 +11,7 @@
 // https://editor.p5js.org/clement.zheng/sketches/t66CpvG7V - lerp()
 
 // Game state variables
-waiting = true; 
+waiting = true;
 dropping = false;
 matching = false;
 gameOver = false;
@@ -176,8 +176,8 @@ function draw() {
 // Remove matches after they are highlighted
 function removeMatches() {
   if (millis() > MATCHING_GEMS_DELAY + gameStateTimer) {
-    for (let y = 0; y < ROWS; y ++) {
-      for (let x = 0; x < COLUMNS; x ++) {
+    for (let y = 0; y < ROWS; y++) {
+      for (let x = 0; x < COLUMNS; x++) {
         if (matchingGems[y][x] === true) {
           gemGrid[y][x] = EMPTY_CELL;
         }
@@ -185,7 +185,7 @@ function removeMatches() {
     }
 
     // Increase combo counter
-    combo ++;
+    combo++;
 
     // Prevent overlapping sounds
     comboSoundOne.stop();
@@ -210,7 +210,7 @@ function removeMatches() {
     else if (combo >= 5) {
       comboSoundFive.play();
     }
- 
+
     // Reset timer and matches, trigger the dropping
     matchingGems = [];
     matching = false;
@@ -251,8 +251,8 @@ function dropOneGem() {
   let movingGems = false;
 
   // Check all cells and find an empty cell, look above the empty cell for a gem and swap them
-  for (let x = 0; x < COLUMNS; x ++) {
-    for (let y = ROWS - 1; y > 0; y --) {
+  for (let x = 0; x < COLUMNS; x++) {
+    for (let y = ROWS - 1; y > 0; y--) {
       if (gemGrid[y][x] === EMPTY_CELL && gemGrid[y - 1][x] !== EMPTY_CELL) {
         gemGrid[y][x] = gemGrid[y - 1][x];
         gemGrid[y - 1][x] = EMPTY_CELL;
@@ -261,7 +261,7 @@ function dropOneGem() {
     }
   }
 
-  return movingGems;  
+  return movingGems;
 }
 
 // Check for matches and activate highlighting and removing process if matches
@@ -287,9 +287,9 @@ function checkMatches() {
 function generateGrid(ROWS, COLUMNS) {
   let gemGrid = [];
 
-  for (let y = 0; y < ROWS; y ++) {
+  for (let y = 0; y < ROWS; y++) {
     gemGrid.push([]);
-    for (let x = 0; x < COLUMNS; x ++) {
+    for (let x = 0; x < COLUMNS; x++) {
 
       let gems = {
         motionX: x * CELL_SIZE,
@@ -305,8 +305,8 @@ function generateGrid(ROWS, COLUMNS) {
 
 // Display the generated array
 function displayGrid() {
-  for (let y = 0; y < ROWS; y ++) {
-    for (let x = 0; x < COLUMNS; x ++) {
+  for (let y = 0; y < ROWS; y++) {
+    for (let x = 0; x < COLUMNS; x++) {
 
       // Highlight current gem or matching gems
       let currentX = Math.floor(mouseX / CELL_SIZE);
@@ -323,7 +323,7 @@ function displayGrid() {
       rect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
 
       // Reduce opacity of current gem if clicked
-      if (currentGem !== null && currentGem.x === x && currentGem.y   === y) {
+      if (currentGem !== null && currentGem.x === x && currentGem.y === y) {
         tint(255, HALF_OPACITY);
       }
       else {
@@ -344,7 +344,7 @@ function displayGrid() {
           image(greenGemImage, gemGrid[y][x].motionX, gemGrid[y][x].motionY, CELL_SIZE, CELL_SIZE);
         }
         else if (gemGrid[y][x].type === ORANGE_GEM) {
-          image(orangeGemImage, gemGrid[y][x].motionX, gemGrid[y][x].motionY, CELL_SIZE, CELL_SIZE);  
+          image(orangeGemImage, gemGrid[y][x].motionX, gemGrid[y][x].motionY, CELL_SIZE, CELL_SIZE);
         }
         else if (gemGrid[y][x].type === PURPLE_GEM) {
           image(purpleGemImage, gemGrid[y][x].motionX, gemGrid[y][x].motionY, CELL_SIZE, CELL_SIZE);
@@ -433,7 +433,7 @@ function displayGameWon() {
 
 // Trigger if time runs out
 function gameEndTrigger() {
-  
+
   // Make sure that this function triggers once when the game ends
   if (!gameWon && !gameOver) {
 
@@ -449,7 +449,7 @@ function gameEndTrigger() {
     }
 
     // Trigger if game won
-    else if (remainingTime ===0 && points >= 10000) {
+    else if (remainingTime === 0 && points >= 10000) {
       gameWon = true;
       waiting = false;
       dropping = false;
@@ -482,16 +482,16 @@ function matchGems() {
   let matchGrid = [];
   gemMatches = false;
 
-  for (let y = 0; y < ROWS; y ++) {
+  for (let y = 0; y < ROWS; y++) {
     matchGrid.push([]);
-    for (let x = 0; x < COLUMNS; x ++) {
+    for (let x = 0; x < COLUMNS; x++) {
       matchGrid[y].push(false);
     }
   }
 
   // Check every cell
-  for (let y = 0; y < ROWS; y ++) {
-    for (let x = 0; x < COLUMNS; x ++) {
+  for (let y = 0; y < ROWS; y++) {
+    for (let x = 0; x < COLUMNS; x++) {
 
       // Save the type of the current gem
       let gemType = gemGrid[y][x].type;
@@ -525,8 +525,8 @@ function matchGems() {
 
 // Replace any empty spots with new gems
 function refillGems() {
-  for (let y = 0; y < ROWS; y ++) {
-    for (let x = 0; x < COLUMNS; x ++) {
+  for (let y = 0; y < ROWS; y++) {
+    for (let x = 0; x < COLUMNS; x++) {
       if (gemGrid[y][x] === EMPTY_CELL) {
 
         let gems = {
