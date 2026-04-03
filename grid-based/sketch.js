@@ -325,10 +325,12 @@ function displayPoints() {
 // Display how much time has passed
 function displayTimer() {
 
-  // Calculate remaining time
-  remainingTime = Math.round((GAME_TIMER - (millis() - gameTimer)) / 1000);
-  if (remainingTime < 0) {
-    remainingTime = 0;
+  // Calculate remaining time if the game is running
+  if (!gameOver && !gameWon) {
+    remainingTime = Math.round((GAME_TIMER - (millis() - gameTimer)) / 1000);
+    if (remainingTime < 0) {
+      remainingTime = 0;
+    }
   }
 
   // Draw the timer
