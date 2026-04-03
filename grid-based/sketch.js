@@ -4,7 +4,7 @@
 // 
 // Extra for Experts:
 // Trying out functions: lerp(), tint(), millis(), Math functions
-// Incorporating a timer, delays, animation, and progression systems (combo and stars)
+// Incorporating a timer, delays, animation, sound, images, state machine, and progression systems (combo and stars)
 
 // https://p5js.org/examples/imported-media-image-transparency/ - image opacity
 // https://editor.p5js.org/MarcoGaLo/sketches/2WSdSF7nx - candy crush reference
@@ -90,10 +90,14 @@ let gameTimer = 0;
 // Sounds
 let dropSound;
 let swapSound;
-let matchSound;
 let blingSound;
 let winSound;
 let loseSound;
+let comboSoundOne;
+let comboSoundTwo;
+let comboSoundThree;
+let comboSoundFour;
+let comboSoundFive;
 
 // Load gem images and sounds
 function preload() {
@@ -108,10 +112,14 @@ function preload() {
   // Sounds
   dropSound = loadSound("drop.mp3");
   swapSound = loadSound("switch.mp3");
-  matchSound = loadSound("shine.mp3");
   blingSound = loadSound("bling.mp3");
   winSound = loadSound("win.mp3");
   loseSound = loadSound("lose.mp3");
+  comboSoundOne = loadSound("1combo.mp3");
+  comboSoundTwo = loadSound("2combo.mp3");
+  comboSoundThree = loadSound("3combo.mp3");
+  comboSoundFour = loadSound("4combo.mp3");
+  comboSoundFive = loadSound("5combo.mp3");
 }
 
 // Set up grid and remove any initial matches
@@ -176,12 +184,26 @@ function removeMatches() {
       }
     }
 
-    // Play highlight sound
-    matchSound.play();
-
     // Increase combo counter
     combo ++;
 
+    // Play the correct combo sound
+    if (combo === 1) {
+      comboSoundOne.play();
+    }
+    else if (combo === 2) {
+      comboSoundTwo.play();
+    }
+    else if (combo === 3) {
+      comboSoundThree.play();
+    }
+    else if (combo === 4) {
+      comboSoundFour.play();
+    }
+    else if (combo >= 5) {
+      comboSoundFive.play();
+    }
+ 
     // Reset timer and matches, trigger the dropping
     matchingGems = [];
     matching = false;
