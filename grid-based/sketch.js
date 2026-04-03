@@ -69,6 +69,7 @@ const POINTS_MARGIN = 10;
 
 let points = 0;
 let currentPoints = 0;
+let stars = 0;
 
 // Game timer constants and variables
 const GAME_TIMER = 120000;
@@ -89,6 +90,8 @@ let dropSound;
 let swapSound;
 let matchSound;
 let blingSound;
+let winSound;
+let loseSound;
 
 // Load gem images and sounds
 function preload() {
@@ -105,6 +108,8 @@ function preload() {
   swapSound = loadSound("switch.mp3");
   matchSound = loadSound("shine.mp3");
   blingSound = loadSound("bling.mp3");
+  winSound = loadSound("win.mp3");
+  loseSound = loadSound("lose.mp3");
 }
 
 // Set up grid and remove any initial matches
@@ -355,6 +360,7 @@ function displayGameOver() {
   textSize(GAME_OVER_TEXT_SIZE);
   noStroke();
   text(`GAME OVER
+    YOU LOSE
     CLICK TO PLAY AGAIN`, width / 2, height / 2);
 }
 
@@ -369,27 +375,52 @@ function displayGameWon() {
   textSize(GAME_OVER_TEXT_SIZE);
   noStroke();
   text(`GAME WON
-    YOU HAD ${remainingTime} TIME LEFT
+    YOU SCORED ${points}
+    ${stars} STARS
     CLICK TO PLAY AGAIN`, width / 2, height / 2);
 }
 
 // Trigger if time runs out
 function gameEndTrigger() {
+  
+  // Make sure that this function triggers once when the game ends
+  if (!gameWon && !gameOver) {
 
-  // Trigger if game over
-  if (remainingTime === 0 && points < 10000) {
-    gameOver = true;
-    waiting = false;
-    dropping = false;
-    matching = false;
-  }
+    // Trigger if game over
+    if (remainingTime === 0 && points < 10000) {
+      gameOver = true;
+      waiting = false;
+      dropping = false;
+      matching = false;
 
-  // Trigger win screen
-  else if (points >= 10000) {
-    gameWon = true;
-    waiting = false;
-    dropping = false;
-    matching = false;
+      // Play lose sound
+      loseSound.play();
+    }
+
+    // Trigger if game won
+    else if (remainingTime ===0 && points >= 10000) {
+      gameWon = true;
+      waiting = false;
+      dropping = false;
+      matching = false;
+
+      // Play win sound
+      winSound.play();
+
+      // Calculate stars
+      if (points >= 12500) {
+        stars = 3;
+      }
+      else if (points >= 11000) {
+        stars = 2;
+      }
+      else if (points >= 10100) {
+        stars = 1;
+      }
+      else {
+        stars = 0;
+      }
+    }
   }
 }
 
@@ -547,6 +578,7 @@ function mousePressed() {
       waiting = true;
       matchingGems = [];
       points = 0;
+      stars = 0;
       gameTimer = millis();
     }
   }
