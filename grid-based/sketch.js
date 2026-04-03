@@ -438,7 +438,7 @@ function gameEndTrigger() {
   if (!gameWon && !gameOver) {
 
     // Trigger if game over
-    if (remainingTime === 0 && points < 10000) {
+    if (remainingTime === 0 && points < 20000) {
       gameOver = true;
       waiting = false;
       dropping = false;
@@ -449,7 +449,7 @@ function gameEndTrigger() {
     }
 
     // Trigger if game won
-    else if (remainingTime === 0 && points >= 10000) {
+    else if (remainingTime === 0 && points >= 20000) {
       gameWon = true;
       waiting = false;
       dropping = false;
@@ -462,10 +462,10 @@ function gameEndTrigger() {
       if (points >= 50000) {
         stars = 3;
       }
-      else if (points >= 30000) {
+      else if (points >= 40000) {
         stars = 2;
       }
-      else if (points >= 15000) {
+      else if (points >= 30000) {
         stars = 1;
       }
       else {
