@@ -11,11 +11,12 @@
 // https://editor.p5js.org/clement.zheng/sketches/t66CpvG7V - lerp()
 
 // Game state variables
-let waiting = true;
+let waiting = false;
 let dropping = false;
 let matching = false;
 let gameOver = false;
 let gameWon = false;
+let starting = true;
 
 // Timer variables and constants
 const MATCHING_GEMS_DELAY = 500;
@@ -63,6 +64,11 @@ const SHUFFLE_PROMPT_TEXT_SIZE = 30;
 
 let promptShowing = false;
 let promptShown = false;
+
+// Start screen constants
+const START_SCREEN_X = 1000;
+const START_SCREEN_Y = 300;
+const START_SCREEN_TEXT_SIZE = 32;
 
 // Point system constants and variables
 const POINTS_TEXT_SIZE = 25;
@@ -145,33 +151,40 @@ function setup() {
   points = 0;
   stars = 0;
   combo = 0;
-  gameTimer = millis();
 }
 
 // Show grid
 function draw() {
-  background("black");
-  shakeScreen();
-  displayGrid();
-  displayPoints();
-  displayTimer();
-  displayCombo();
 
-  // Control game states
-  if (matching) {
-    removeMatches();
+  // Start screen
+  if (starting) {
+    displayStartScreen();
   }
-  else if (dropping) {
-    dropGems();
-  }
-  else if (waiting) {
-    shuffleGrid();
-  }
-  else if (gameOver) {
-    displayGameOver();
-  }
-  else if (gameWon) {
-    displayGameWon();
+  else {
+    // Display everything
+    background("black");
+    shakeScreen();
+    displayGrid();
+    displayPoints();
+    displayTimer();
+    displayCombo();
+  
+    // Control game states
+    if (matching) {
+      removeMatches();
+    }
+    else if (dropping) {
+      dropGems();
+    }
+    else if (waiting) {
+      shuffleGrid();
+    }
+    else if (gameOver) {
+      displayGameOver();
+    }
+    else if (gameWon) {
+      displayGameWon();
+    }
   }
 }
 
@@ -319,6 +332,23 @@ function shakeScreen() {
   translate(random(-shiftAmount, shiftAmount), random(-shiftAmount, shiftAmount));
 
   shakeAmount = 0;
+}
+
+// Display rules
+function displayStartScreen() {
+  fill("white");
+  rectMode(CENTER);
+  rect(width / 2, height / 2, START_SCREEN_X, START_SCREEN_Y);
+  rectMode(CORNER);
+  textAlign(CENTER, CENTER);
+  fill("black");
+  textSize(START_SCREEN_TEXT_SIZE);
+  noStroke();
+  text(`GET AS MANY POINTS AS YOU CAN IN 2 MINUTES
+    YOU NEED AT LEAST 10K POINTS TO WIN
+    BUT YOU WILL RECEIVE STARS FOR POINTS OVER 10K
+    BUILD YOUR COMBO FOR QUICK POINTS
+    CLICK TO START`, width / 2, height / 2);
 }
 
 // Display the generated array
@@ -579,8 +609,15 @@ function shuffleGrid() {
 // Click two adjacent gems to switch them
 function mousePressed() {
 
+  // Click to start game
+  if (starting) {
+    starting = false;
+    waiting = true;
+    gameTimer = millis();
+  }
+
   // Make sure that the game currently isn't moving or matching gems
-  if (waiting && !promptShowing) {
+  else if (waiting && !promptShowing) {
 
     // Reset idle time for shuffle prompt
     gameStateTimer = millis();
