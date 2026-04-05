@@ -69,7 +69,7 @@ let promptShown = false;
 // Start screen constants
 const START_SCREEN_X = 1000;
 const START_SCREEN_Y = 300;
-const START_SCREEN_TEXT_SIZE = 32;
+const START_SCREEN_TEXT_SIZE = 30;
 
 // Point system constants and variables
 const POINTS_TEXT_SIZE = 25;
@@ -179,7 +179,7 @@ function draw() {
     displayPoints();
     displayTimer();
     displayCombo();
-  
+
     // Control game states
     if (matching) {
       removeMatches();
@@ -229,7 +229,7 @@ function removeMatches() {
     bombSoundThree.stop();
     bombSoundFour.stop();
     bombSoundFive.stop();
-    
+
     // Play the correct bomb sound
     if (bombFound) {
       if (combo === 1) {
@@ -248,7 +248,7 @@ function removeMatches() {
         bombSoundFive.play();
       }
       bombFound = false;
-    } 
+    }
 
     // Play the correct combo sound
     else if (!bombFound) {
@@ -389,10 +389,12 @@ function displayStartScreen() {
   textSize(START_SCREEN_TEXT_SIZE);
   noStroke();
   text(`GET AS MANY POINTS AS YOU CAN IN 2 MINUTES
-    YOU NEED AT LEAST 10K POINTS TO WIN
-    BUT YOU WILL RECEIVE STARS FOR POINTS OVER 10K
-    BUILD YOUR COMBO FOR QUICK POINTS
-    CLICK TO START`, width / 2, height / 2);
+  YOU NEED AT LEAST 40K POINTS TO WIN
+  BUT YOU WILL RECEIVE STARS FOR POINTS OVER 40K
+  BUILD YOUR COMBO FOR QUICK POINTS
+  MATCH THE BOMB GEMS FOR BIG CLEARS
+
+  CLICK TO START`, width / 2, height / 2);
 }
 
 // Display the generated array
@@ -509,8 +511,8 @@ function displayGameOver() {
   textSize(GAME_OVER_TEXT_SIZE);
   noStroke();
   text(`GAME OVER
-    YOU LOSE
-    CLICK TO PLAY AGAIN`, width / 2, height / 2);
+  YOU LOSE
+  CLICK TO PLAY AGAIN`, width / 2, height / 2);
 }
 
 // Display game won
@@ -524,9 +526,9 @@ function displayGameWon() {
   textSize(GAME_OVER_TEXT_SIZE);
   noStroke();
   text(`GAME WON
-    YOU SCORED ${points}
-    ${stars} STARS
-    CLICK TO PLAY AGAIN`, width / 2, height / 2);
+  YOU SCORED ${points}
+  ${stars} STARS
+  CLICK TO PLAY AGAIN`, width / 2, height / 2);
 }
 
 // Trigger if time runs out
@@ -536,7 +538,7 @@ function gameEndTrigger() {
   if (!gameWon && !gameOver) {
 
     // Trigger if game over
-    if (remainingTime === 0 && points < 20000) {
+    if (remainingTime === 0 && points < 40000) {
       gameOver = true;
       waiting = false;
       dropping = false;
@@ -547,7 +549,7 @@ function gameEndTrigger() {
     }
 
     // Trigger if game won
-    else if (remainingTime === 0 && points >= 20000) {
+    else if (remainingTime === 0 && points >= 40000) {
       gameWon = true;
       waiting = false;
       dropping = false;
@@ -557,13 +559,13 @@ function gameEndTrigger() {
       winSound.play();
 
       // Calculate stars
-      if (points >= 50000) {
+      if (points >= 70000) {
         stars = 3;
       }
-      else if (points >= 40000) {
+      else if (points >= 60000) {
         stars = 2;
       }
-      else if (points >= 30000) {
+      else if (points >= 50000) {
         stars = 1;
       }
       else {
@@ -654,7 +656,7 @@ function refillGems() {
         let gems = {
           motionX: x * CELL_SIZE,
           motionY: y * CELL_SIZE,
-          type: random(gemTypes), 
+          type: random(gemTypes),
           bomb: random(1, 100) <= 5
         };
 
@@ -677,7 +679,7 @@ function shuffleGrid() {
     textSize(SHUFFLE_PROMPT_TEXT_SIZE);
     noStroke();
     text(`Press R to shuffle the board for -1000 points
-      Press C to ignore`, width / 2, height / 2);
+    Press C to ignore`, width / 2, height / 2);
   }
 }
 
@@ -689,6 +691,7 @@ function mousePressed() {
     starting = false;
     waiting = true;
     gameTimer = millis();
+    gameStateTimer = millis();
   }
 
   // Make sure that the game currently isn't moving or matching gems
