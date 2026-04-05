@@ -11,11 +11,11 @@
 // https://editor.p5js.org/clement.zheng/sketches/t66CpvG7V - lerp()
 
 // Game state variables
-waiting = true;
-dropping = false;
-matching = false;
-gameOver = false;
-gameWon = false;
+let waiting = true;
+let dropping = false;
+let matching = false;
+let gameOver = false;
+let gameWon = false;
 
 // Timer variables and constants
 const MATCHING_GEMS_DELAY = 500;
