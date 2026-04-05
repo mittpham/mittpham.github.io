@@ -35,6 +35,7 @@ const HIGHLIGHTED_CELL = 4;
 const BORDER_X = 200;
 
 let gemGrid;
+let shakeAmount = 0;
 
 // Gems variables and constants
 const BLUE_GEM = 0;
@@ -150,6 +151,7 @@ function setup() {
 // Show grid
 function draw() {
   background("black");
+  shakeScreen();
   displayGrid();
   displayPoints();
   displayTimer();
@@ -209,6 +211,12 @@ function removeMatches() {
     }
     else if (combo >= 5) {
       comboSoundFive.play();
+    }
+
+    // Determine shake amount
+    shakeAmount = combo;
+    if (combo > 5) {
+      shakeAmount = 5;
     }
 
     // Reset timer and matches, trigger the dropping
@@ -301,6 +309,16 @@ function generateGrid(ROWS, COLUMNS) {
     }
   }
   return gemGrid;
+}
+
+// Shake the screen when you match
+function shakeScreen() {
+
+  // Shift screen based off how big your combo is
+  let shiftAmount = map(shakeAmount, 0, 5, 0, 15, true);
+  translate(random(-shiftAmount, shiftAmount), random(-shiftAmount, shiftAmount));
+
+  shakeAmount = 0;
 }
 
 // Display the generated array
