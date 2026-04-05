@@ -10,6 +10,13 @@
 // https://editor.p5js.org/MarcoGaLo/sketches/2WSdSF7nx - candy crush reference
 // https://editor.p5js.org/clement.zheng/sketches/t66CpvG7V - lerp()
 
+// Ideas to add:
+// limit how many wrong matches you can get before you lose - 3 heart system
+// Sound and animation for wrong match
+// Points feed on the right to show points gain (ex: +100, + 500)
+// Progress bar to show how close you are to winning or reaching a certain star
+// another star level - 100k
+
 // Game state variables
 let waiting = false;
 let dropping = false;
