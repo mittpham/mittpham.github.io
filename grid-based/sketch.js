@@ -47,6 +47,7 @@ const RED_GEM = 4;
 
 let gemTypes = [BLUE_GEM, GREEN_GEM, ORANGE_GEM, PURPLE_GEM, RED_GEM];
 let matchingGems = [];
+let bombFound = false;
 let blueGemImage;
 let greenGemImage;
 let orangeGemImage;
@@ -105,6 +106,11 @@ let comboSoundTwo;
 let comboSoundThree;
 let comboSoundFour;
 let comboSoundFive;
+let bombSoundOne;
+let bombSoundTwo;
+let bombSoundThree;
+let bombSoundFour;
+let bombSoundFive;
 
 // Load gem images and sounds
 function preload() {
@@ -127,6 +133,11 @@ function preload() {
   comboSoundThree = loadSound("3combo.mp3");
   comboSoundFour = loadSound("4combo.mp3");
   comboSoundFive = loadSound("5combo.mp3");
+  bombSoundOne = loadSound("1explosion.mp3");
+  bombSoundTwo = loadSound("2explosion.mp3");
+  bombSoundThree = loadSound("3explosion.mp3");
+  bombSoundFour = loadSound("4explosion.mp3");
+  bombSoundFive = loadSound("5explosion.mp3");
 }
 
 // Set up grid and remove any initial matches
@@ -194,6 +205,11 @@ function removeMatches() {
     for (let y = 0; y < ROWS; y++) {
       for (let x = 0; x < COLUMNS; x++) {
         if (matchingGems[y][x] === true) {
+
+          // Check for bomb to play sound
+          if (gemGrid[y][x].bomb) {
+            bombFound = true;
+          }
           gemGrid[y][x] = EMPTY_CELL;
         }
       }
@@ -208,22 +224,49 @@ function removeMatches() {
     comboSoundThree.stop();
     comboSoundFour.stop();
     comboSoundFive.stop();
+    bombSoundOne.stop();
+    bombSoundTwo.stop();
+    bombSoundThree.stop();
+    bombSoundFour.stop();
+    bombSoundFive.stop();
+    
+    // Play the correct bomb sound
+    if (bombFound) {
+      if (combo === 1) {
+        bombSoundOne.play();
+      }
+      else if (combo === 2) {
+        bombSoundTwo.play();
+      }
+      else if (combo === 3) {
+        bombSoundThree.play();
+      }
+      else if (combo === 4) {
+        bombSoundFour.play();
+      }
+      else if (combo >= 5) {
+        bombSoundFive.play();
+      }
+      bombFound = false;
+    } 
 
     // Play the correct combo sound
-    if (combo === 1) {
-      comboSoundOne.play();
-    }
-    else if (combo === 2) {
-      comboSoundTwo.play();
-    }
-    else if (combo === 3) {
-      comboSoundThree.play();
-    }
-    else if (combo === 4) {
-      comboSoundFour.play();
-    }
-    else if (combo >= 5) {
-      comboSoundFive.play();
+    else if (!bombFound) {
+      if (combo === 1) {
+        comboSoundOne.play();
+      }
+      else if (combo === 2) {
+        comboSoundTwo.play();
+      }
+      else if (combo === 3) {
+        comboSoundThree.play();
+      }
+      else if (combo === 4) {
+        comboSoundFour.play();
+      }
+      else if (combo >= 5) {
+        comboSoundFive.play();
+      }
     }
 
     // Determine shake amount
@@ -315,7 +358,8 @@ function generateGrid(ROWS, COLUMNS) {
       let gems = {
         motionX: x * CELL_SIZE,
         motionY: y * CELL_SIZE,
-        type: random(gemTypes)
+        type: random(gemTypes),
+        bomb: random(1, 100) <= 5
       };
 
       gemGrid[y].push(gems);
@@ -376,6 +420,12 @@ function displayGrid() {
       }
       else {
         noTint();
+      }
+
+      // Mark bombs
+      if (gemGrid[y][x].bomb) {
+        fill("black");
+        square(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE);
       }
 
       // Load image for each gem
@@ -547,22 +597,46 @@ function matchGems() {
       // Check for horizontal matches
       if (x - 1 >= 0 && x + 1 < COLUMNS) {
         if (gemGrid[y][x - 1].type === gemType && gemGrid[y][x + 1].type === gemType) {
-          matchGrid[y][x] = true;
-          matchGrid[y][x - 1] = true;
-          matchGrid[y][x + 1] = true;
-          gemMatches = true;
-          points += 100 * (combo + 1);
+
+          // Check for bomb
+          if (gemGrid[y][x].bomb || gemGrid[y][x - 1].bomb || gemGrid[y][x + 1].bomb) {
+            for (let i = 0; i < COLUMNS; i++) {
+              matchGrid[y][i] = true;
+            }
+            gemMatches = true;
+            points += 800 * (combo + 1);
+          }
+          // Check for normal matches
+          else {
+            matchGrid[y][x] = true;
+            matchGrid[y][x - 1] = true;
+            matchGrid[y][x + 1] = true;
+            gemMatches = true;
+            points += 100 * (combo + 1);
+          }
         }
       }
 
       // Check for vertical matches
       if (y - 1 >= 0 && y + 1 < ROWS) {
         if (gemGrid[y - 1][x].type === gemType && gemGrid[y + 1][x].type === gemType) {
-          matchGrid[y][x] = true;
-          matchGrid[y - 1][x] = true;
-          matchGrid[y + 1][x] = true;
-          gemMatches = true;
-          points += 100 * (combo + 1);
+
+          // Check for bomb
+          if (gemGrid[y][x].bomb || gemGrid[y - 1][x].bomb || gemGrid[y + 1][x].bomb) {
+            for (let i = 0; i < ROWS; i++) {
+              matchGrid[i][x] = true;
+            }
+            gemMatches = true;
+            points += 800 * (combo + 1);
+          }
+          // Check for normal matches
+          else {
+            matchGrid[y][x] = true;
+            matchGrid[y - 1][x] = true;
+            matchGrid[y + 1][x] = true;
+            gemMatches = true;
+            points += 100 * (combo + 1);
+          }
         }
       }
     }
@@ -580,7 +654,8 @@ function refillGems() {
         let gems = {
           motionX: x * CELL_SIZE,
           motionY: y * CELL_SIZE,
-          type: random(gemTypes)
+          type: random(gemTypes), 
+          bomb: random(1, 100) <= 5
         };
 
         gemGrid[y][x] = gems;
