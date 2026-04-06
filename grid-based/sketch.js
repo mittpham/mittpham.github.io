@@ -15,7 +15,6 @@
 // Sound and animation for wrong match
 // Points feed on the right to show points gain (ex: +100, + 500)
 // Progress bar to show how close you are to winning or reaching a certain star
-// another star level - 100k
 
 // Game state variables
 let waiting = false;
@@ -40,7 +39,7 @@ const HALF_OPACITY = 127;
 const EMPTY_CELL = -1;
 const UNHIGHLIGHTED_CELL = 1;
 const HIGHLIGHTED_CELL = 4;
-const BORDER_X = 200;
+const BORDER_X = 320;
 
 let gemGrid;
 let shakeAmount = 0;
@@ -73,8 +72,19 @@ const SHUFFLE_PROMPT_TEXT_SIZE = 30;
 let promptShowing = false;
 let promptShown = false;
 
+// Progress bar constants
+const PROGRESS_BAR_X = 900;
+const PROGRESS_BAR_Y = 20;
+const PROGRESS_BAR_W = 25;
+const PROGRESS_BAR_H = 600;
+const PROGRESS_TEXT_SIZE = 20;
+const STARS_X = 890;
+const PROGRESS_MARGIN = 20;
+
+let progress = 0;
+
 // Start screen constants
-const START_SCREEN_X = 1000;
+const START_SCREEN_X = 1400;
 const START_SCREEN_Y = 300;
 const START_SCREEN_TEXT_SIZE = 30;
 
@@ -186,6 +196,7 @@ function draw() {
     displayPoints();
     displayTimer();
     displayCombo();
+    displayProgress();
 
     // Control game states
     if (matching) {
@@ -485,6 +496,33 @@ function displayCombo() {
   text(`${combo} COMBO`, ROWS * CELL_SIZE + POINTS_MARGIN, CELL_SIZE * 2);
 }
 
+// Display how close the player is to winning or getting stars
+function displayProgress() {
+  fill("white");
+  rect(PROGRESS_BAR_X, PROGRESS_BAR_Y, PROGRESS_BAR_W, PROGRESS_BAR_H);
+  let progress = map(points, 0, 100000, 0, PROGRESS_BAR_H);
+  fill("red");
+  rect(PROGRESS_BAR_X, height - PROGRESS_BAR_Y, PROGRESS_BAR_W, -progress);
+
+  // Show the benchmarks
+  textAlign(RIGHT, CENTER);
+  fill("white");
+  textSize(PROGRESS_TEXT_SIZE);
+  noStroke();
+  text(`☆ 40K`, STARS_X, height - map(40000, 0, 100000, 0, PROGRESS_BAR_H) - PROGRESS_MARGIN);
+  text(`★ 50K`, STARS_X, height - map(50000, 0, 100000, 0, PROGRESS_BAR_H) - PROGRESS_MARGIN);
+  text(`★★ 60K`, STARS_X, height - map(60000, 0, 100000, 0, PROGRESS_BAR_H) - PROGRESS_MARGIN);
+  text(`★★★ 70K`, STARS_X, height - map(70000, 0, 100000, 0, PROGRESS_BAR_H) - PROGRESS_MARGIN);
+  text(`★★★★ 100K`, STARS_X, height - map(100000, 0, 100000, 0, PROGRESS_BAR_H) - PROGRESS_MARGIN);
+
+  // Add lines to the progress bar
+  stroke("black");
+  line(PROGRESS_BAR_X, height - map(40000, 0, 100000, 0, PROGRESS_BAR_H) - PROGRESS_MARGIN, PROGRESS_BAR_X + PROGRESS_BAR_W, height - map(40000, 0, 100000, 0, PROGRESS_BAR_H) - PROGRESS_MARGIN);
+  line(PROGRESS_BAR_X, height - map(50000, 0, 100000, 0, PROGRESS_BAR_H) - PROGRESS_MARGIN, PROGRESS_BAR_X + PROGRESS_BAR_W, height - map(50000, 0, 100000, 0, PROGRESS_BAR_H) - PROGRESS_MARGIN);
+  line(PROGRESS_BAR_X, height - map(60000, 0, 100000, 0, PROGRESS_BAR_H) - PROGRESS_MARGIN, PROGRESS_BAR_X + PROGRESS_BAR_W, height - map(60000, 0, 100000, 0, PROGRESS_BAR_H) - PROGRESS_MARGIN);
+  line(PROGRESS_BAR_X, height - map(70000, 0, 100000, 0, PROGRESS_BAR_H) - PROGRESS_MARGIN, PROGRESS_BAR_X + PROGRESS_BAR_W, height - map(70000, 0, 100000, 0, PROGRESS_BAR_H) - PROGRESS_MARGIN);
+}
+
 // Display how much time has passed
 function displayTimer() {
 
@@ -566,7 +604,10 @@ function gameEndTrigger() {
       winSound.play();
 
       // Calculate stars
-      if (points >= 70000) {
+      if (points >= 100000) {
+        stars = 4;
+      }
+      else if (points >= 70000) {
         stars = 3;
       }
       else if (points >= 60000) {
