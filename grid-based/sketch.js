@@ -5,6 +5,7 @@
 // Extra for Experts:
 // Trying out functions: lerp(), tint(), millis(), Math functions
 // Incorporating a timer, delays, animation, sound, images, state machine, and progression systems (combo and stars)
+// Match 3 game mechanics (chain matches, match 4+, invalid matches)
 
 // https://p5js.org/examples/imported-media-image-transparency/ - image opacity
 // https://editor.p5js.org/MarcoGaLo/sketches/2WSdSF7nx - candy crush reference
@@ -14,7 +15,6 @@
 // limit how many wrong matches you can get before you lose - 3 heart system
 // Sound and animation for wrong match
 // Points feed on the right to show points gain (ex: +100, + 500)
-// Progress bar to show how close you are to winning or reaching a certain star
 
 // Game state variables
 let waiting = false;
@@ -652,6 +652,14 @@ function matchGems() {
           if (gemGrid[y][x].bomb || gemGrid[y][x - 1].bomb || gemGrid[y][x + 1].bomb) {
             for (let i = 0; i < COLUMNS; i++) {
               matchGrid[y][i] = true;
+
+              // Chain bomb reaction
+              if (gemGrid[y][i].bomb) {
+                for (let j = 0; j < ROWS; j++) {
+                  matchGrid[j][i] = true;
+                  points += 800 * (combo + 1);
+                }
+              }
             }
             gemMatches = true;
             points += 800 * (combo + 1);
@@ -675,6 +683,14 @@ function matchGems() {
           if (gemGrid[y][x].bomb || gemGrid[y - 1][x].bomb || gemGrid[y + 1][x].bomb) {
             for (let i = 0; i < ROWS; i++) {
               matchGrid[i][x] = true;
+
+              // Chain bomb reaction
+              if (gemGrid[i][x].bomb) {
+                for (let j = 0; j < COLUMNS; j++) {
+                  matchGrid[i][j] = true;
+                  points += 800 * (combo + 1);
+                }
+              }
             }
             gemMatches = true;
             points += 800 * (combo + 1);
