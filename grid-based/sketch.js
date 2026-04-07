@@ -15,6 +15,7 @@
 // limit how many wrong matches you can get before you lose - 3 heart system
 // Sound and animation for wrong match
 // Points feed on the right to show points gain (ex: +100, + 500)
+// Automatically find matches and give player hints
 
 // Game state variables
 let waiting = false;
@@ -88,15 +89,19 @@ const START_SCREEN_X = 1400;
 const START_SCREEN_Y = 300;
 const START_SCREEN_TEXT_SIZE = 30;
 
-// Point system constants and variables
+// Constants and variables for points, stars, combos, and hearts
 const POINTS_TEXT_SIZE = 25;
 const POINTS_MARGIN = 10;
 const COMBO_TEXT_SIZE = 25;
+const HEARTS_X = 640;
+const HEARTS_Y = 560;
 
 let points = 0;
 let currentPoints = 0;
 let stars = 0;
 let combo = 0;
+let hearts = 3;
+let heartImage;
 
 // Game timer constants and variables
 const GAME_TIMER = 120000;
@@ -115,6 +120,7 @@ let gameTimer = 0;
 // Sounds
 let dropSound;
 let swapSound;
+let invalidSwapSound;
 let blingSound;
 let winSound;
 let loseSound;
@@ -138,10 +144,12 @@ function preload() {
   orangeGemImage = loadImage("orangegem.png");
   purpleGemImage = loadImage("purplegem.png");
   redGemImage = loadImage("redgem.png");
+  heartImage = loadImage("heart.png");
 
   // Sounds
   dropSound = loadSound("drop.mp3");
   swapSound = loadSound("switch.mp3");
+  invalidSwapSound = loadSound("invalidswap.mp3");
   blingSound = loadSound("bling.mp3");
   winSound = loadSound("win.mp3");
   loseSound = loadSound("lose.mp3");
@@ -197,6 +205,7 @@ function draw() {
     displayTimer();
     displayCombo();
     displayProgress();
+    displayHearts();
 
     // Control game states
     if (matching) {
@@ -523,6 +532,13 @@ function displayProgress() {
   line(PROGRESS_BAR_X, height - map(70000, 0, 100000, 0, PROGRESS_BAR_H) - PROGRESS_MARGIN, PROGRESS_BAR_X + PROGRESS_BAR_W, height - map(70000, 0, 100000, 0, PROGRESS_BAR_H) - PROGRESS_MARGIN);
 }
 
+// Display the players hearts
+function displayHearts() {
+  for (let i = 0; i < hearts; i++) {
+    image(heartImage, HEARTS_X + 80 * i, HEARTS_Y, CELL_SIZE, CELL_SIZE);
+  }
+}
+
 // Display how much time has passed
 function displayTimer() {
 
@@ -619,6 +635,18 @@ function gameEndTrigger() {
       else {
         stars = 0;
       }
+    }
+
+    // End game if no hearts
+    else if (hearts === 0) {
+      invalidSwapSound.stop();
+      gameOver = true;
+      waiting = false;
+      dropping = false;
+      matching = false;
+
+      // Play lose sound
+      loseSound.play();
     }
   }
 }
@@ -790,10 +818,15 @@ function mousePressed() {
             let temporaryGem = gemGrid[currentGem.y][currentGem.x];
             gemGrid[currentGem.y][currentGem.x] = gemGrid[gemY][gemX];
             gemGrid[gemY][gemX] = temporaryGem;
-          }
+            hearts--;
 
-          // Play swapping sound
-          swapSound.play();
+            // Play invalid sound
+            invalidSwapSound.play();
+          }
+          else {
+            // Play swapping sound
+            swapSound.play();
+          }
         }
 
         // Reset player click
@@ -828,6 +861,7 @@ function mousePressed() {
       points = 0;
       stars = 0;
       combo = 0;
+      hearts = 3;
       gameTimer = millis();
     }
   }
