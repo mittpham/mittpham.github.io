@@ -12,10 +12,14 @@
 // https://editor.p5js.org/clement.zheng/sketches/t66CpvG7V - lerp()
 
 // Ideas to add:
-// limit how many wrong matches you can get before you lose - 3 heart system
-// Sound and animation for wrong match
+// animation for wrong match
 // Points feed on the right to show points gain (ex: +100, + 500)
 // Automatically find matches and give player hints
+
+// Issues to fix:
+// adjust the delays, sometimes the game feels clunky and slow
+// Gems instantly spawn in sometimes????
+// bombs are retriggering themselves
 
 // Game state variables
 let waiting = false;
@@ -534,6 +538,7 @@ function displayProgress() {
 
 // Display the players hearts
 function displayHearts() {
+  noTint();
   for (let i = 0; i < hearts; i++) {
     image(heartImage, HEARTS_X + 80 * i, HEARTS_Y, CELL_SIZE, CELL_SIZE);
   }
@@ -892,6 +897,7 @@ function keyPressed() {
       dropping = false;
       matching = false;
       waiting = true;
+      currentGem = null;
       matchingGems = [];
       gameStateTimer = millis();
       promptShowing = false;
@@ -899,6 +905,11 @@ function keyPressed() {
       currentPoints -= 1000;
       points = currentPoints;
       combo = 0;
+
+      // Ensure no negative points
+      if (points < 0) {
+        points = 0;
+      }
     }
 
     // Ignore the prompt screen
