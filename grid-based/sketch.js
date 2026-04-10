@@ -13,13 +13,15 @@
 
 // Ideas to add:
 // animation for wrong match
-// Points feed on the right to show points gain (ex: +100, + 500)
 // Automatically find matches and give player hints
+// Objective gem, can't be matched, win when it falls to the bottom
+// Walls, frozen gems, other types
 
 // Issues to fix:
 // adjust the delays, sometimes the game feels clunky and slow
 // Gems instantly spawn in sometimes????
 // bombs are retriggering themselves
+// Points feed opacity
 
 // Game state variables
 let waiting = false;
@@ -32,6 +34,7 @@ let starting = true;
 // Timer variables and constants
 const MATCHING_GEMS_DELAY = 500;
 const DROPPING_GEMS_DELAY = 200;
+const TEMPORARY_POINTS_DELAY = 500;
 const SHUFFLE_GRID_TIME = 20000;
 
 let gameStateTimer = 0;
@@ -102,6 +105,7 @@ const HEARTS_Y = 560;
 
 let points = 0;
 let currentPoints = 0;
+let temporaryPoints = 0;
 let stars = 0;
 let combo = 0;
 let hearts = 3;
@@ -189,6 +193,7 @@ function setup() {
   waiting = true;
   matchingGems = [];
   points = 0;
+  temporaryPoints = 0;
   stars = 0;
   combo = 0;
 }
@@ -210,6 +215,7 @@ function draw() {
     displayCombo();
     displayProgress();
     displayHearts();
+    displayTemporaryPoints();
 
     // Control game states
     if (matching) {
@@ -506,7 +512,7 @@ function displayCombo() {
   fill("white");
   textSize(COMBO_TEXT_SIZE);
   noStroke();
-  text(`${combo} COMBO`, ROWS * CELL_SIZE + POINTS_MARGIN, CELL_SIZE * 2);
+  text(`${combo} COMBO`, ROWS * CELL_SIZE + POINTS_MARGIN, CELL_SIZE * 3);
 }
 
 // Display how close the player is to winning or getting stars
@@ -544,6 +550,26 @@ function displayHearts() {
   }
 }
 
+// Display the points gained every match
+function displayTemporaryPoints() {
+
+  // Change the opacity during the delay
+  let opacity = map(0, TEMPORARY_POINTS_DELAY, 255, 0);
+
+  // Prevent negative opacity
+  if (opacity < 0) {
+    opacity = 0;
+  }
+
+  // Draw out temporary points
+  textAlign(LEFT, CENTER);
+  fill("white");
+  tint(255, opacity);
+  textSize(POINTS_TEXT_SIZE);
+  noStroke();
+  text(`+${temporaryPoints}`, ROWS * CELL_SIZE + POINTS_MARGIN, CELL_SIZE * 2);
+}
+
 // Display how much time has passed
 function displayTimer() {
 
@@ -560,7 +586,7 @@ function displayTimer() {
   fill("white");
   textSize(POINTS_TEXT_SIZE);
   noStroke();
-  text(`Time: ${remainingTime}`, ROWS * CELL_SIZE + TIMER_MARGIN, CELL_SIZE * 3);
+  text(`Time: ${remainingTime}`, ROWS * CELL_SIZE + TIMER_MARGIN, CELL_SIZE * 4);
 
   // Check if player has lost or won
   gameEndTrigger();
@@ -662,6 +688,7 @@ function matchGems() {
   // Create a new empty array
   let matchGrid = [];
   gemMatches = false;
+  temporaryPoints = 0;
 
   for (let y = 0; y < ROWS; y++) {
     matchGrid.push([]);
@@ -691,11 +718,13 @@ function matchGems() {
                 for (let j = 0; j < ROWS; j++) {
                   matchGrid[j][i] = true;
                   points += 800 * (combo + 1);
+                  temporaryPoints += 800 * (combo + 1);
                 }
               }
             }
             gemMatches = true;
             points += 800 * (combo + 1);
+            temporaryPoints += 800 * (combo + 1);
           }
           // Check for normal matches
           else {
@@ -704,6 +733,7 @@ function matchGems() {
             matchGrid[y][x + 1] = true;
             gemMatches = true;
             points += 100 * (combo + 1);
+            temporaryPoints += 100 * (combo + 1);
           }
         }
       }
@@ -722,11 +752,13 @@ function matchGems() {
                 for (let j = 0; j < COLUMNS; j++) {
                   matchGrid[i][j] = true;
                   points += 800 * (combo + 1);
+                  temporaryPoints += 800 * (combo + 1);
                 }
               }
             }
             gemMatches = true;
             points += 800 * (combo + 1);
+            temporaryPoints += 800 * (combo + 1);
           }
           // Check for normal matches
           else {
@@ -735,6 +767,7 @@ function matchGems() {
             matchGrid[y + 1][x] = true;
             gemMatches = true;
             points += 100 * (combo + 1);
+            temporaryPoints += 100 * (combo + 1);
           }
         }
       }
