@@ -19,7 +19,6 @@
 
 // Issues to fix:
 // adjust the delays, sometimes the game feels clunky and slow
-// Gems instantly spawn in sometimes????
 // bombs are retriggering themselves
 // Points feed opacity
 
@@ -47,6 +46,7 @@ const HALF_OPACITY = 127;
 const EMPTY_CELL = -1;
 const UNHIGHLIGHTED_CELL = 1;
 const HIGHLIGHTED_CELL = 4;
+const OFFSCREEN = -100;
 const BORDER_X = 320;
 
 let gemGrid;
@@ -147,30 +147,30 @@ let bombSoundFive;
 function preload() {
 
   // Images
-  blueGemImage = loadImage("bluegem.png");
-  greenGemImage = loadImage("greengem.png");
-  orangeGemImage = loadImage("orangegem.png");
-  purpleGemImage = loadImage("purplegem.png");
-  redGemImage = loadImage("redgem.png");
-  heartImage = loadImage("heart.png");
+  blueGemImage = loadImage("assets/bluegem.png");
+  greenGemImage = loadImage("assets/greengem.png");
+  orangeGemImage = loadImage("assets/orangegem.png");
+  purpleGemImage = loadImage("assets/purplegem.png");
+  redGemImage = loadImage("assets/redgem.png");
+  heartImage = loadImage("assets/heart.png");
 
   // Sounds
-  dropSound = loadSound("drop.mp3");
-  swapSound = loadSound("switch.mp3");
-  invalidSwapSound = loadSound("invalidswap.mp3");
-  blingSound = loadSound("bling.mp3");
-  winSound = loadSound("win.mp3");
-  loseSound = loadSound("lose.mp3");
-  comboSoundOne = loadSound("1combo.mp3");
-  comboSoundTwo = loadSound("2combo.mp3");
-  comboSoundThree = loadSound("3combo.mp3");
-  comboSoundFour = loadSound("4combo.mp3");
-  comboSoundFive = loadSound("5combo.mp3");
-  bombSoundOne = loadSound("1explosion.mp3");
-  bombSoundTwo = loadSound("2explosion.mp3");
-  bombSoundThree = loadSound("3explosion.mp3");
-  bombSoundFour = loadSound("4explosion.mp3");
-  bombSoundFive = loadSound("5explosion.mp3");
+  dropSound = loadSound("assets/drop.mp3");
+  swapSound = loadSound("assets/switch.mp3");
+  invalidSwapSound = loadSound("assets/invalidswap.mp3");
+  blingSound = loadSound("assets/bling.mp3");
+  winSound = loadSound("assets/win.mp3");
+  loseSound = loadSound("assets/lose.mp3");
+  comboSoundOne = loadSound("assets/1combo.mp3");
+  comboSoundTwo = loadSound("assets/2combo.mp3");
+  comboSoundThree = loadSound("assets/3combo.mp3");
+  comboSoundFour = loadSound("assets/4combo.mp3");
+  comboSoundFive = loadSound("assets/5combo.mp3");
+  bombSoundOne = loadSound("assets/1explosion.mp3");
+  bombSoundTwo = loadSound("assets/2explosion.mp3");
+  bombSoundThree = loadSound("assets/3explosion.mp3");
+  bombSoundFour = loadSound("assets/4explosion.mp3");
+  bombSoundFive = loadSound("assets/5explosion.mp3");
 }
 
 // Set up grid and remove any initial matches
@@ -562,12 +562,13 @@ function displayTemporaryPoints() {
   }
 
   // Draw out temporary points
-  textAlign(LEFT, CENTER);
-  fill("white");
-  tint(255, opacity);
-  textSize(POINTS_TEXT_SIZE);
-  noStroke();
-  text(`+${temporaryPoints}`, ROWS * CELL_SIZE + POINTS_MARGIN, CELL_SIZE * 2);
+  if (temporaryPoints > 0) {
+    textAlign(LEFT, CENTER);
+    textSize(POINTS_TEXT_SIZE);
+    noStroke();
+    text(`+${temporaryPoints}`, ROWS * CELL_SIZE + POINTS_MARGIN, CELL_SIZE * 2);
+    fill(255, 255, 255, opacity);
+  }
 }
 
 // Display how much time has passed
@@ -785,7 +786,7 @@ function refillGems() {
 
         let gems = {
           motionX: x * CELL_SIZE,
-          motionY: y * CELL_SIZE,
+          motionY: OFFSCREEN,
           type: random(gemTypes),
           bomb: random(1, 100) <= 5
         };
