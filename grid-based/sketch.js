@@ -685,6 +685,7 @@ function matchGems() {
   // Create a new empty array
   let matchGrid = [];
   gemMatches = false;
+  temporaryPoints = 0;
 
   for (let y = 0; y < ROWS; y++) {
     matchGrid.push([]);
