@@ -894,6 +894,7 @@ function mousePressed() {
       waiting = true;
       matchingGems = [];
       points = 0;
+      temporaryPoints = 0;
       stars = 0;
       combo = 0;
       hearts = 3;
