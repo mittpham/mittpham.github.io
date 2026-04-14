@@ -37,12 +37,14 @@ const TEMPORARY_POINTS_DELAY = 500;
 const SHUFFLE_GRID_TIME = 20000;
 
 let gameStateTimer = 0;
+let temporaryPointsTimer = 0;
 
 // Grid variables
 const CELL_SIZE = 80;
 const ROWS = 8;
 const COLUMNS = 8;
 const HALF_OPACITY = 127;
+const FULL_OPACITY = 255;
 const EMPTY_CELL = -1;
 const UNHIGHLIGHTED_CELL = 1;
 const HIGHLIGHTED_CELL = 4;
@@ -339,6 +341,9 @@ function dropGems() {
       dropping = false;
       waiting = true;
 
+      // Separate timer to fade opacity of points feed
+      temporaryPointsTimer = millis();
+
       // Reset combo
       if (!checkMatches()) {
         combo = 0;
@@ -523,23 +528,29 @@ function displayProgress() {
   fill("red");
   rect(PROGRESS_BAR_X, height - PROGRESS_BAR_Y, PROGRESS_BAR_W, -progress);
 
+  let zeroStarsY = height - map(40000, 0, 100000, 0, PROGRESS_BAR_H) - PROGRESS_MARGIN;
+  let oneStarsY = height - map(50000, 0, 100000, 0, PROGRESS_BAR_H) - PROGRESS_MARGIN;
+  let twoStarsY = height - map(60000, 0, 100000, 0, PROGRESS_BAR_H) - PROGRESS_MARGIN;
+  let threeStarsY = height - map(70000, 0, 100000, 0, PROGRESS_BAR_H) - PROGRESS_MARGIN;
+  let fourStarsY = height - map(100000, 0, 100000, 0, PROGRESS_BAR_H) - PROGRESS_MARGIN;
+
   // Show the benchmarks
   textAlign(RIGHT, CENTER);
   fill("white");
   textSize(PROGRESS_TEXT_SIZE);
   noStroke();
-  text(`☆ 40K`, STARS_X, height - map(40000, 0, 100000, 0, PROGRESS_BAR_H) - PROGRESS_MARGIN);
-  text(`★ 50K`, STARS_X, height - map(50000, 0, 100000, 0, PROGRESS_BAR_H) - PROGRESS_MARGIN);
-  text(`★★ 60K`, STARS_X, height - map(60000, 0, 100000, 0, PROGRESS_BAR_H) - PROGRESS_MARGIN);
-  text(`★★★ 70K`, STARS_X, height - map(70000, 0, 100000, 0, PROGRESS_BAR_H) - PROGRESS_MARGIN);
-  text(`★★★★ 100K`, STARS_X, height - map(100000, 0, 100000, 0, PROGRESS_BAR_H) - PROGRESS_MARGIN);
+  text(`☆ 40K`, STARS_X, zeroStarsY);
+  text(`★ 50K`, STARS_X, oneStarsY);
+  text(`★★ 60K`, STARS_X, twoStarsY);
+  text(`★★★ 70K`, STARS_X, threeStarsY);
+  text(`★★★★ 100K`, STARS_X, fourStarsY);
 
   // Add lines to the progress bar
   stroke("black");
-  line(PROGRESS_BAR_X, height - map(40000, 0, 100000, 0, PROGRESS_BAR_H) - PROGRESS_MARGIN, PROGRESS_BAR_X + PROGRESS_BAR_W, height - map(40000, 0, 100000, 0, PROGRESS_BAR_H) - PROGRESS_MARGIN);
-  line(PROGRESS_BAR_X, height - map(50000, 0, 100000, 0, PROGRESS_BAR_H) - PROGRESS_MARGIN, PROGRESS_BAR_X + PROGRESS_BAR_W, height - map(50000, 0, 100000, 0, PROGRESS_BAR_H) - PROGRESS_MARGIN);
-  line(PROGRESS_BAR_X, height - map(60000, 0, 100000, 0, PROGRESS_BAR_H) - PROGRESS_MARGIN, PROGRESS_BAR_X + PROGRESS_BAR_W, height - map(60000, 0, 100000, 0, PROGRESS_BAR_H) - PROGRESS_MARGIN);
-  line(PROGRESS_BAR_X, height - map(70000, 0, 100000, 0, PROGRESS_BAR_H) - PROGRESS_MARGIN, PROGRESS_BAR_X + PROGRESS_BAR_W, height - map(70000, 0, 100000, 0, PROGRESS_BAR_H) - PROGRESS_MARGIN);
+  line(PROGRESS_BAR_X, zeroStarsY, PROGRESS_BAR_X + PROGRESS_BAR_W, zeroStarsY);
+  line(PROGRESS_BAR_X, oneStarsY, PROGRESS_BAR_X + PROGRESS_BAR_W, oneStarsY);
+  line(PROGRESS_BAR_X, twoStarsY, PROGRESS_BAR_X + PROGRESS_BAR_W, twoStarsY);
+  line(PROGRESS_BAR_X, threeStarsY, PROGRESS_BAR_X + PROGRESS_BAR_W, threeStarsY);
 }
 
 // Display the players hearts
@@ -554,7 +565,7 @@ function displayHearts() {
 function displayTemporaryPoints() {
 
   // Change the opacity during the delay
-  let opacity = map(0, TEMPORARY_POINTS_DELAY, 255, 0);
+  let opacity = map(millis() - temporaryPointsTimer, 0, TEMPORARY_POINTS_DELAY, FULL_OPACITY, 0);
 
   // Prevent negative opacity
   if (opacity < 0) {
@@ -565,9 +576,9 @@ function displayTemporaryPoints() {
   if (temporaryPoints > 0) {
     textAlign(LEFT, CENTER);
     textSize(POINTS_TEXT_SIZE);
+    fill(255, 255, 255, opacity);
     noStroke();
     text(`+${temporaryPoints}`, ROWS * CELL_SIZE + POINTS_MARGIN, CELL_SIZE * 2);
-    fill(255, 255, 255, opacity);
   }
 }
 
@@ -715,7 +726,7 @@ function matchGems() {
               matchGrid[y][i] = true;
 
               // Chain bomb reaction
-              if (gemGrid[y][i].bomb) {
+              if (gemGrid[y][i].bomb && i !== x && i !== x - 1 && i !== x + 1) {
                 for (let j = 0; j < ROWS; j++) {
                   matchGrid[j][i] = true;
                   points += 800 * (combo + 1);
@@ -749,7 +760,7 @@ function matchGems() {
               matchGrid[i][x] = true;
 
               // Chain bomb reaction
-              if (gemGrid[i][x].bomb) {
+              if (gemGrid[i][x].bomb && i !== y && i !== y - 1 && i !== y + 1) {
                 for (let j = 0; j < COLUMNS; j++) {
                   matchGrid[i][j] = true;
                   points += 800 * (combo + 1);
