@@ -11,6 +11,8 @@
 - [Rectangular Grid](08-rect-grid)
 - [Game of Life](09-life)
 - [Character in Grid](10-character)
+- [Platformer Text Files](11-platformer-files)
+- [Walker OOP Demo](12-walker)
 
 ## Assignments
 - [Interactive Scene](interactive-scene)
