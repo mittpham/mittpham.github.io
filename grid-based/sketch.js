@@ -19,8 +19,6 @@
 
 // Issues to fix:
 // adjust the delays, sometimes the game feels clunky and slow
-// bombs are retriggering themselves
-// Points feed opacity
 
 // Game state variables
 let waiting = false;
@@ -37,14 +35,12 @@ const TEMPORARY_POINTS_DELAY = 500;
 const SHUFFLE_GRID_TIME = 20000;
 
 let gameStateTimer = 0;
-let temporaryPointsTimer = 0;
 
 // Grid variables
 const CELL_SIZE = 80;
 const ROWS = 8;
 const COLUMNS = 8;
 const HALF_OPACITY = 127;
-const FULL_OPACITY = 255;
 const EMPTY_CELL = -1;
 const UNHIGHLIGHTED_CELL = 1;
 const HIGHLIGHTED_CELL = 4;
@@ -341,9 +337,6 @@ function dropGems() {
       dropping = false;
       waiting = true;
 
-      // Separate timer to fade opacity of points feed
-      temporaryPointsTimer = millis();
-
       // Reset combo
       if (!checkMatches()) {
         combo = 0;
@@ -564,19 +557,11 @@ function displayHearts() {
 // Display the points gained every match
 function displayTemporaryPoints() {
 
-  // Change the opacity during the delay
-  let opacity = map(millis() - temporaryPointsTimer, 0, TEMPORARY_POINTS_DELAY, FULL_OPACITY, 0);
-
-  // Prevent negative opacity
-  if (opacity < 0) {
-    opacity = 0;
-  }
-
   // Draw out temporary points
   if (temporaryPoints > 0) {
     textAlign(LEFT, CENTER);
     textSize(POINTS_TEXT_SIZE);
-    fill(255, 255, 255, opacity);
+    fill("white");
     noStroke();
     text(`+${temporaryPoints}`, ROWS * CELL_SIZE + POINTS_MARGIN, CELL_SIZE * 2);
   }
@@ -700,7 +685,6 @@ function matchGems() {
   // Create a new empty array
   let matchGrid = [];
   gemMatches = false;
-  temporaryPoints = 0;
 
   for (let y = 0; y < ROWS; y++) {
     matchGrid.push([]);
