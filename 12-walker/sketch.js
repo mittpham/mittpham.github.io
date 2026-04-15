@@ -33,21 +33,41 @@ class Walker {
   }
 }
 
-let harjot;
-let mitt;
+let theWalkers = [];
 
 function setup() {
-  background(220);
   createCanvas(windowWidth, windowHeight);
-  harjot = new Walker(width / 2, height / 2);
-  mitt = new Walker(300, 500);
-  mitt.color = "blue";
 }
 
 function draw() {
-  harjot.move();
-  mitt.move();
-  
-  harjot.display();
-  mitt.display();
+  for (let aWalker of theWalkers) {
+    aWalker.move();
+    aWalker.display();
+  }
 }
+
+function mousePressed() {
+  let someWalker = new Walker(mouseX, mouseY);
+  someWalker.color = color(random(255), random(255), random(255));
+  theWalkers.push(someWalker);
+}
+
+// 2 Walker version
+// let harjot;
+// let mitt;
+
+// function setup() {
+//   background(220);
+//   createCanvas(windowWidth, windowHeight);
+//   harjot = new Walker(width / 2, height / 2);
+//   mitt = new Walker(300, 500);
+//   mitt.color = "blue";
+// }
+
+// function draw() {
+//   harjot.move();
+//   mitt.move();
+  
+//   harjot.display();
+//   mitt.display();
+// }
