@@ -29,6 +29,10 @@ class Particle {
 
     this.opacity --;
   }
+
+  isDead() {
+    return this.opacity <= 0;
+  }
 }
 
 
@@ -39,8 +43,14 @@ function setup() {
 function draw() {
   background("black");
   for (let particle of fireworks) {
-    particle.update();
-    particle.display();
+    if (particle.IsDead()) {
+      let index = fireworks.indexOf(particle);
+      fireworks.splice(index, 1);
+    }
+    else {
+      particle.update();
+      particle.display();
+    }
   }
 }
 
