@@ -1,9 +1,5 @@
 // Fireworks OOP Demo
 
-const NUMBER_OF_PARTICLES_PER_CLICK = 100;
-
-let fireworks = [];
-
 class Particle {
   constructor(x, y) {
     this.x = x;
@@ -20,14 +16,16 @@ class Particle {
   display() {
     noStroke();
     fill(this.r, this.g, this.b, this.opacity);
-    circle(this.x, this.y, this.radius);
+    circle(this.x, this.y, this.radius*2);
   }
 
   update() {
+    //move
     this.x += this.dx;
     this.y += this.dy;
 
-    this.opacity --;
+    //fade away over time
+    this.opacity--;
   }
 
   isDead() {
@@ -35,6 +33,8 @@ class Particle {
   }
 }
 
+let theFireworks = [];
+const NUMBER_OF_PARTICLES_PER_CLICK = 40;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -42,21 +42,25 @@ function setup() {
 
 function draw() {
   background("black");
-  for (let particle of fireworks) {
-    if (particle.IsDead()) {
-      let index = fireworks.indexOf(particle);
-      fireworks.splice(index, 1);
+  for (let aFirework of theFireworks) {
+    if (aFirework.isDead()) {
+      //remove it
+      let index = theFireworks.indexOf(aFirework);
+      theFireworks.splice(index, 1);
     }
     else {
-      particle.update();
-      particle.display();
+      aFirework.update();
+      aFirework.display();
     }
   }
+
+  //insane amounts of fireworks
+  // mousePressed();
 }
 
 function mousePressed() {
-  for (let i = 0; i < NUMBER_OF_PARTICLES_PER_CLICK; i ++) {
-    let newParticle = new Particle(mouseX, mouseY);
-    fireworks.push(newParticle);
+  for (let i = 0; i < NUMBER_OF_PARTICLES_PER_CLICK; i++) {
+    let someFirework = new Particle(mouseX, mouseY);
+    theFireworks.push(someFirework);
   }
 }
